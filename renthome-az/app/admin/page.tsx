@@ -1,4 +1,3 @@
-export default function AdminDashboard() {
-  // TODO: middleware-də admin rol yoxlaması, statistika kartları
-  return <div className="p-8">Admin dashboard</div>;
+export default function AdminIstifadecilerPage() {
+  return <div className="p-8">İstifadəçilərin idarə edilməsi</div>;
 }
