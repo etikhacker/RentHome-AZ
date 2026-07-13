@@ -94,8 +94,9 @@ export default function GirisPage() {
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full border border-line rounded-lg py-2.5 text-sm font-medium hover:bg-white"
+          className="w-full border border-line rounded-lg py-2.5 text-sm font-medium hover:bg-white flex items-center justify-center gap-2.5"
         >
+          <GoogleIcon />
           Google ilə giriş
         </button>
 
@@ -107,5 +108,28 @@ export default function GirisPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18">
+      <path
+        fill="#4285F4"
+        d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.84 2.09-1.8 2.73v2.27h2.9c1.7-1.57 2.68-3.87 2.68-6.64z"
+      />
+      <path
+        fill="#34A853"
+        d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.25c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33C2.47 15.98 5.48 18 9 18z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M3.95 10.71c-.18-.54-.28-1.11-.28-1.71s.1-1.17.28-1.71V4.96H.98A8.98 8.98 0 0 0 0 9c0 1.45.35 2.83.98 4.04l2.97-2.33z"
+      />
+      <path
+        fill="#EA4335"
+        d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.47 2.02.98 4.96l2.97 2.33C4.66 5.17 6.65 3.58 9 3.58z"
+      />
+    </svg>
   );
 }
