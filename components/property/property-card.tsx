@@ -1,16 +1,38 @@
 import { Heart } from "lucide-react";
-import type { Property } from "@/lib/types";
 
 type Props = {
-  property: Pick<
-    Property,
-    "id" | "title" | "price" | "rooms" | "floor" | "total_floors" | "is_premium"
-  > & { cityName?: string; districtName?: string; tags?: string[] };
+  property: {
+    id: string;
+    title: string;
+    price: number;
+    floor: number | null;
+    total_floors: number | null;
+    is_premium: boolean;
+    is_renovated: boolean;
+    is_furnished: boolean;
+    has_elevator: boolean;
+    has_balcony: boolean;
+    utilities_included: boolean;
+    cityName?: string;
+    districtName?: string;
+    thumbnailUrl?: string | null;
+  };
   tilt?: "left" | "right";
 };
 
+function buildTags(p: Props["property"]) {
+  const tags: string[] = [];
+  tags.push(p.is_renovated ? "Təmirli" : "Təmirsiz");
+  if (p.is_furnished) tags.push("Əşyalı");
+  if (p.has_elevator) tags.push("Lift");
+  if (p.has_balcony) tags.push("Balkon");
+  if (p.utilities_included) tags.push("Kommunal daxil");
+  return tags;
+}
+
 export function PropertyCard({ property, tilt = "left" }: Props) {
   const rotation = tilt === "left" ? "-rotate-[0.6deg]" : "rotate-[0.5deg]";
+  const tags = buildTags(property);
 
   return (
     <a
@@ -26,8 +48,13 @@ export function PropertyCard({ property, tilt = "left" }: Props) {
         </span>
       )}
 
-      <div className="h-[150px] rounded mb-3 bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] flex items-center justify-center text-xs text-ink-soft">
-        şəkil
+      <div className="h-[150px] rounded mb-3 bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] flex items-center justify-center text-xs text-ink-soft overflow-hidden">
+        {property.thumbnailUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={property.thumbnailUrl} alt={property.title} className="w-full h-full object-cover" />
+        ) : (
+          "şəkil"
+        )}
       </div>
 
       <h3 className="text-[15.5px] font-semibold mb-1">{property.title}</h3>
@@ -38,9 +65,9 @@ export function PropertyCard({ property, tilt = "left" }: Props) {
           : ""}
       </p>
 
-      {property.tags && property.tags.length > 0 && (
+      {tags.length > 0 && (
         <div className="flex gap-1.5 flex-wrap mb-3">
-          {property.tags.map((tag) => (
+          {tags.map((tag) => (
             <span
               key={tag}
               className="text-[11px] text-ink-soft border border-line px-2 py-0.5 rounded-full"
