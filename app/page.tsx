@@ -3,14 +3,14 @@ import { PropertyCard } from "@/components/property/property-card";
 
 // Bu, sadəcə UI üçün nümunə datadır - real versiyada Supabase-dən gələcək
 const yeniElanlar = [
-  { id: "1", title: "2 otaqlı, Nəsimi r.", price: 650, is_premium: false, rooms: 2, floor: 4, total_floors: 9, cityName: "Bakı", districtName: "28 May m.", tags: ["Təmirli", "Əşyalı", "Lift"] },
-  { id: "2", title: "1 otaqlı studiya", price: 380, is_premium: false, rooms: 1, floor: 2, total_floors: 5, cityName: "Bakı", districtName: "Yasamal r.", tags: ["Təmirsiz", "Balkon"] },
-  { id: "3", title: "3 otaqlı həyət evi", price: 520, is_premium: false, rooms: 3, floor: null, total_floors: null, cityName: "Sumqayıt", districtName: "6-cı mikrorayon", tags: ["Əşyalı", "Kommunal daxil"] },
+  { id: "1", title: "2 otaqlı, Nəsimi r.", price: 650, is_premium: false, floor: 4, total_floors: 9, cityName: "Bakı", districtName: "28 May m.", is_renovated: true, is_furnished: true, has_elevator: true, has_balcony: false, utilities_included: false },
+  { id: "2", title: "1 otaqlı studiya", price: 380, is_premium: false, floor: 2, total_floors: 5, cityName: "Bakı", districtName: "Yasamal r.", is_renovated: false, is_furnished: false, has_elevator: false, has_balcony: true, utilities_included: false },
+  { id: "3", title: "3 otaqlı həyət evi", price: 520, is_premium: false, floor: null, total_floors: null, cityName: "Sumqayıt", districtName: "6-cı mikrorayon", is_renovated: false, is_furnished: true, has_elevator: false, has_balcony: false, utilities_included: true },
 ];
 
 const premiumElanlar = [
-  { id: "4", title: "4 otaqlı, dəniz mənzərəli", price: 1450, is_premium: true, rooms: 4, floor: 12, total_floors: 16, cityName: "Bakı", districtName: "Badamdar", tags: ["Təmirli", "Lift", "Yeni tikili"] },
-  { id: "5", title: "2 otaqlı, tam təmirli", price: 890, is_premium: true, rooms: 2, floor: 5, total_floors: 9, cityName: "Bakı", districtName: "Səbail r.", tags: ["Əşyalı", "Kommunal daxil"] },
+  { id: "4", title: "4 otaqlı, dəniz mənzərəli", price: 1450, is_premium: true, floor: 12, total_floors: 16, cityName: "Bakı", districtName: "Badamdar", is_renovated: true, is_furnished: false, has_elevator: true, has_balcony: true, utilities_included: false },
+  { id: "5", title: "2 otaqlı, tam təmirli", price: 890, is_premium: true, floor: 5, total_floors: 9, cityName: "Bakı", districtName: "Səbail r.", is_renovated: true, is_furnished: true, has_elevator: false, has_balcony: false, utilities_included: true },
 ];
 
 export default function HomePage() {
