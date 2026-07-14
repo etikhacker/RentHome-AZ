@@ -23,3 +23,19 @@ body {
   border: 1px solid rgba(201, 138, 59, 0.75);
   transform: rotate(-3deg);
 }
+
+/* Bütün <select> elementləri üçün vahid, brauzerlərarası uyğun görünüş.
+   Native ox işarəsini gizlədib, mətnin çərçivədən çıxmasının qarşısını alır. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23716b5c' stroke-width='1.6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1rem;
+  padding-right: 2.25rem !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

@@ -15,18 +15,15 @@ export async function SiteHeader() {
   let unreadNotifications = 0;
 
   if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .eq("id", user.id)
-      .single();
+    const [{ data: profile }, { count }] = await Promise.all([
+      supabase.from("profiles").select("full_name").eq("id", user.id).single(),
+      supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false),
+    ]);
     fullName = profile?.full_name ?? null;
-
-    const { count } = await supabase
-      .from("notifications")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("is_read", false);
     unreadNotifications = count ?? 0;
   }
 
