@@ -1,123 +1,129 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/layout/site-header";
-import { ProfileForm } from "@/components/profile/profile-form";
-import { MyListingRow } from "@/components/property/my-listing-row";
+"use client";
 
-export default async function ProfilPage() {
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+
+export function ProfileForm({
+  userId,
+  email,
+  initialFullName,
+  initialPhone,
+  initialAvatarUrl,
+}: {
+  userId: string;
+  email: string;
+  initialFullName: string | null;
+  initialPhone: string | null;
+  initialAvatarUrl: string | null;
+}) {
   const supabase = createClient();
+  const router = useRouter();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [fullName, setFullName] = useState(initialFullName ?? "");
+  const [phone, setPhone] = useState(initialPhone ?? "");
+  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl ?? "");
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
-  if (!user) redirect("/giris?next=/profil");
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, phone, avatar_url, role")
-    .eq("id", user.id)
-    .single();
+    setUploading(true);
+    const path = `avatars/${userId}/${Date.now()}-${file.name}`;
+    const { error } = await supabase.storage.from("property-images").upload(path, file);
 
-  const isOwner = profile?.role === "ev_sahibi" || profile?.role === "admin";
+    if (!error) {
+      const { data } = supabase.storage.from("property-images").getPublicUrl(path);
+      setAvatarUrl(data.publicUrl);
+    }
+    setUploading(false);
+  }
 
-  const { data: myListings } = isOwner
-    ? await supabase
-        .from("properties")
-        .select("id, title, price, status")
-        .eq("owner_id", user.id)
-        .order("created_at", { ascending: false })
-    : { data: [] };
+  async function handleSave() {
+    setSaving(true);
+    setMessage(null);
 
-  const { count: favoriteCount } = await supabase
-    .from("favorites")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: fullName, phone, avatar_url: avatarUrl || null })
+      .eq("id", userId);
 
-  const { count: unreadCount } = await supabase
-    .from("messages")
-    .select("id", { count: "exact", head: true })
-    .eq("receiver_id", user.id)
-    .eq("is_read", false);
+    setSaving(false);
+    setMessage(error ? "Yadda saxlanılmadı, yenidən cəhd et." : "Yadda saxlanıldı.");
+    router.refresh();
+  }
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  }
 
   return (
-    <>
-      <SiteHeader />
-      <div className="max-w-[900px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-6">Profil</h1>
+    <div className="bg-paper border border-line rounded-2xl p-6">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] overflow-hidden flex items-center justify-center text-xs text-ink-soft">
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+          ) : (
+            "şəkil"
+          )}
+        </div>
+        <label className="text-sm text-teal-deep cursor-pointer">
+          {uploading ? "Yüklənir..." : "Şəkli dəyiş"}
+          <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+        </label>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 space-y-6">
-            <ProfileForm
-              userId={user.id}
-              email={user.email ?? ""}
-              initialFullName={profile?.full_name ?? null}
-              initialPhone={profile?.phone ?? null}
-              initialAvatarUrl={profile?.avatar_url ?? null}
-            />
-
-            {isOwner && (
-              <div className="bg-paper border border-line rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display text-lg font-medium">Elanlarım</h2>
-                  <Link
-                    href="/elan-yerlesdir"
-                    className="text-sm text-teal-deep border-b border-teal-deep"
-                  >
-                    + Yeni elan
-                  </Link>
-                </div>
-
-                {!myListings || myListings.length === 0 ? (
-                  <p className="text-sm text-ink-soft">Hələ heç bir elanın yoxdur.</p>
-                ) : (
-                  <div className="space-y-2.5">
-                    {myListings.map((p) => (
-                      <MyListingRow
-                        key={p.id}
-                        id={p.id}
-                        title={p.title}
-                        price={p.price}
-                        status={p.status}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-4">
-            <Link
-              href="/favorilerim"
-              className="block bg-paper border border-line rounded-2xl p-5 hover:border-teal"
-            >
-              <div className="text-2xl font-mono font-medium">{favoriteCount ?? 0}</div>
-              <div className="text-sm text-ink-soft">Yadda saxlanılan elan</div>
-            </Link>
-
-            <Link
-              href="/mesajlar"
-              className="block bg-paper border border-line rounded-2xl p-5 hover:border-teal"
-            >
-              <div className="text-2xl font-mono font-medium">{unreadCount ?? 0}</div>
-              <div className="text-sm text-ink-soft">Oxunmamış mesaj</div>
-            </Link>
-
-            <div className="bg-paper border border-line rounded-2xl p-5">
-              <div className="text-sm text-ink-soft mb-1">Hesab tipi</div>
-              <div className="text-sm font-medium">
-                {profile?.role === "admin"
-                  ? "Admin"
-                  : profile?.role === "ev_sahibi"
-                  ? "Ev sahibi"
-                  : "İcarəçi"}
-              </div>
-            </div>
-          </div>
+      <div className="space-y-3.5 mb-5">
+        <div>
+          <label className="block text-xs text-ink-soft mb-1.5 font-medium">Ad Soyad</label>
+          <input
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-ink-soft mb-1.5 font-medium">Telefon</label>
+          <input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
+            placeholder="+994 50 123 45 67"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-ink-soft mb-1.5 font-medium">Email</label>
+          <input
+            value={email}
+            disabled
+            className="w-full border border-line bg-bg text-ink-soft rounded-lg px-3 py-2.5 text-sm"
+          />
         </div>
       </div>
-    </>
+
+      {message && <p className="text-sm text-teal-deep mb-3">{message}</p>}
+
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="bg-teal hover:bg-teal-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium disabled:opacity-60"
+        >
+          {saving ? "Saxlanılır..." : "Yadda saxla"}
+        </button>
+        <button
+          onClick={handleSignOut}
+          className="text-sm text-brick border-b border-brick"
+        >
+          Çıxış et
+        </button>
+      </div>
+    </div>
   );
 }
