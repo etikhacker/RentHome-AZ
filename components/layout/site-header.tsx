@@ -1,6 +1,22 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let fullName: string | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+    fullName = profile?.full_name ?? null;
+  }
+
   return (
     <header className="border-b border-line py-5">
       <div className="max-w-[1120px] mx-auto px-7 flex items-center justify-between">
@@ -18,12 +34,35 @@ export function SiteHeader() {
           <span className="text-[13px] text-ink-soft border border-line px-2.5 py-1 rounded">
             AZ / EN
           </span>
-          <Link href="/giris" className="px-4 py-2 rounded-md text-sm font-medium border border-ink">
-            Giriş
-          </Link>
-          <Link href="/qeydiyyat" className="px-4 py-2 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep">
-            Qeydiyyat
-          </Link>
+
+          {user ? (
+            <>
+              <Link href="/mesajlar" className="text-sm text-ink-soft hover:text-ink">
+                Mesajlar
+              </Link>
+              <Link href="/favorilerim" className="text-sm text-ink-soft hover:text-ink">
+                Favorilər
+              </Link>
+              <Link
+                href="/profil"
+                className="px-4 py-2 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep"
+              >
+                {fullName ? fullName.split(" ")[0] : "Profil"}
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/giris" className="px-4 py-2 rounded-md text-sm font-medium border border-ink">
+                Giriş
+              </Link>
+              <Link
+                href="/qeydiyyat"
+                className="px-4 py-2 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep"
+              >
+                Qeydiyyat
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
