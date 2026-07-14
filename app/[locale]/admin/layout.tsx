@@ -20,7 +20,7 @@ export default async function AdminLayout({ children, params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect({ href: { pathname: "/giris", query: { next: "/admin" } }, locale });
+  if (!user) return redirect({ href: { pathname: "/giris", query: { next: "/admin" } }, locale });
 
   const { data: profile } = await supabase
     .from("profiles")

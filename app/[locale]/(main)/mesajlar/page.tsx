@@ -17,7 +17,7 @@ export default async function MesajlarPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect({ href: { pathname: "/giris", query: { next: "/mesajlar" } }, locale });
+  if (!user) return redirect({ href: { pathname: "/giris", query: { next: "/mesajlar" } }, locale });
 
   const { data: messages } = await supabase
     .from("messages")

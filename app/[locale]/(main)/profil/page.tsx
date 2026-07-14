@@ -19,7 +19,7 @@ export default async function ProfilPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect({ href: { pathname: "/giris", query: { next: "/profil" } }, locale });
+  if (!user) return redirect({ href: { pathname: "/giris", query: { next: "/profil" } }, locale });
 
   const { data: profile } = await supabase
     .from("profiles")

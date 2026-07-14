@@ -17,7 +17,7 @@ export default async function FavorilerimPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect({ href: { pathname: "/giris", query: { next: "/favorilerim" } }, locale });
+  if (!user) return redirect({ href: { pathname: "/giris", query: { next: "/favorilerim" } }, locale });
 
   const { data: favorites } = await supabase
     .from("favorites")

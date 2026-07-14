@@ -51,6 +51,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // Bütün path-ləri əhatə et, amma static faylları və auth callback-i çıxar
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|auth/callback|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
