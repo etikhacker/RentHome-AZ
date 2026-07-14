@@ -4,6 +4,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "RentHome AZ — Kirayə elanları",
   description: "Azərbaycanda icarə elanları platforması",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({

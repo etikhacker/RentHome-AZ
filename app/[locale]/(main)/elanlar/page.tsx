@@ -1,3 +1,4 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PropertyCard } from "@/components/property/property-card";
@@ -13,11 +14,16 @@ type SearchParams = {
   elevator?: string;
 };
 
-export default async function ElanlarPage({
-  searchParams,
-}: {
+type Props = {
   searchParams: SearchParams;
-}) {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function ElanlarPage({ searchParams, params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("listings");
   const supabase = createClient();
 
   const { data: cities } = await supabase
@@ -56,17 +62,17 @@ export default async function ElanlarPage({
 
       <section className="pt-10 pb-16">
         <div className="max-w-[1120px] mx-auto px-7">
-          <h1 className="font-display text-2xl font-medium mb-6">Bütün elanlar</h1>
+          <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
 
           <PropertyFilters cities={cities ?? []} searchParams={searchParams} />
 
           {error && (
-            <p className="text-sm text-brick">Elanları yükləyərkən xəta baş verdi.</p>
+            <p className="text-sm text-brick">{t("errorLoad")}</p>
           )}
 
           {!error && properties?.length === 0 && (
             <p className="text-sm text-ink-soft">
-              Bu filtrlərə uyğun elan tapılmadı. Filtrləri dəyişib yenidən yoxla.
+              {t("noResults")}
             </p>
           )}
 

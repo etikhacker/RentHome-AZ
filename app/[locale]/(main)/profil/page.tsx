@@ -1,18 +1,25 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link, redirect } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { MyListingRow } from "@/components/property/my-listing-row";
 
-export default async function ProfilPage() {
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function ProfilPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("profile");
+  const tRoles = await getTranslations("roles");
   const supabase = createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/giris?next=/profil");
+  if (!user) redirect({ href: "/giris", locale, query: { next: "/profil" } });
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -45,7 +52,7 @@ export default async function ProfilPage() {
     <>
       <SiteHeader />
       <div className="max-w-[900px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-6">Profil</h1>
+        <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
@@ -60,17 +67,17 @@ export default async function ProfilPage() {
             {isOwner && (
               <div className="bg-paper border border-line rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display text-lg font-medium">Elanlarım</h2>
+                  <h2 className="font-display text-lg font-medium">{t("myListings")}</h2>
                   <Link
                     href="/elan-yerlesdir"
                     className="text-sm text-teal-deep border-b border-teal-deep"
                   >
-                    + Yeni elan
+                    {t("newListing")}
                   </Link>
                 </div>
 
                 {!myListings || myListings.length === 0 ? (
-                  <p className="text-sm text-ink-soft">Hələ heç bir elanın yoxdur.</p>
+                  <p className="text-sm text-ink-soft">{t("noListings")}</p>
                 ) : (
                   <div className="space-y-2.5">
                     {myListings.map((p) => (
@@ -94,7 +101,7 @@ export default async function ProfilPage() {
               className="block bg-paper border border-line rounded-2xl p-5 hover:border-teal"
             >
               <div className="text-2xl font-mono font-medium">{favoriteCount ?? 0}</div>
-              <div className="text-sm text-ink-soft">Yadda saxlanılan elan</div>
+              <div className="text-sm text-ink-soft">{t("favoriteCount")}</div>
             </Link>
 
             <Link
@@ -102,17 +109,13 @@ export default async function ProfilPage() {
               className="block bg-paper border border-line rounded-2xl p-5 hover:border-teal"
             >
               <div className="text-2xl font-mono font-medium">{unreadCount ?? 0}</div>
-              <div className="text-sm text-ink-soft">Oxunmamış mesaj</div>
+              <div className="text-sm text-ink-soft">{t("unreadMessages")}</div>
             </Link>
 
             <div className="bg-paper border border-line rounded-2xl p-5">
-              <div className="text-sm text-ink-soft mb-1">Hesab tipi</div>
+              <div className="text-sm text-ink-soft mb-1">{t("accountType")}</div>
               <div className="text-sm font-medium">
-                {profile?.role === "admin"
-                  ? "Admin"
-                  : profile?.role === "ev_sahibi"
-                  ? "Ev sahibi"
-                  : "İcarəçi"}
+                {profile?.role ? tRoles(profile.role as "admin" | "ev_sahibi" | "icarechi") : ""}
               </div>
             </div>
           </div>

@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function ImageGallery({ images }: { images: { url: string }[] }) {
+  const tCommon = useTranslations("common");
   const [active, setActive] = useState(0);
 
   if (images.length === 0) {
     return (
       <div className="h-[360px] rounded-xl bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] flex items-center justify-center text-sm text-ink-soft">
-        Şəkil yoxdur
+        {tCommon("noImage")}
       </div>
     );
   }

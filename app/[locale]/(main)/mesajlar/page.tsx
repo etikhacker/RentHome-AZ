@@ -1,16 +1,23 @@
-import { redirect } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { MessagesClient } from "@/components/messages/messages-client";
 
-export default async function MesajlarPage() {
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function MesajlarPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("messages");
   const supabase = createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/giris?next=/mesajlar");
+  if (!user) redirect({ href: "/giris", locale, query: { next: "/mesajlar" } });
 
   const { data: messages } = await supabase
     .from("messages")
@@ -40,14 +47,14 @@ export default async function MesajlarPage() {
       .from("profiles")
       .select("id, full_name")
       .in("id", otherUserIds);
-    profiles?.forEach((p) => (profileNames[p.id] = p.full_name ?? "İstifadəçi"));
+    profiles?.forEach((p) => (profileNames[p.id] = p.full_name ?? t("defaultUser")));
   }
 
   return (
     <>
       <SiteHeader />
       <div className="max-w-[1120px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-6">Mesajlar</h1>
+        <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
         <MessagesClient
           currentUserId={user.id}
           initialMessages={messages ?? []}

@@ -1,8 +1,11 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { NotificationBell } from "@/components/notifications/notification-bell";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export async function SiteHeader() {
+  const t = await getTranslations("nav");
   const supabase = createClient();
   const {
     data: { user },
@@ -35,42 +38,40 @@ export async function SiteHeader() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-7 text-sm text-ink-soft">
-          <Link href="/elanlar" className="hover:text-ink">Kirayə axtar</Link>
-          <Link href="/elan-yerlesdir" className="hover:text-ink">Elan yerləşdir</Link>
-          <Link href="/haqqimizda" className="hover:text-ink">Necə işləyir</Link>
+          <Link href="/elanlar" className="hover:text-ink">{t("search")}</Link>
+          <Link href="/elan-yerlesdir" className="hover:text-ink">{t("postListing")}</Link>
+          <Link href="/haqqimizda" className="hover:text-ink">{t("howItWorks")}</Link>
         </nav>
 
         <div className="flex items-center gap-3.5">
-          <span className="text-[13px] text-ink-soft border border-line px-2.5 py-1 rounded">
-            AZ / EN
-          </span>
+          <LanguageSwitcher />
 
           {user ? (
             <>
               <NotificationBell userId={user.id} initialUnreadCount={unreadNotifications} />
               <Link href="/mesajlar" className="text-sm text-ink-soft hover:text-ink">
-                Mesajlar
+                {t("messages")}
               </Link>
               <Link href="/favorilerim" className="text-sm text-ink-soft hover:text-ink">
-                Favorilər
+                {t("favorites")}
               </Link>
               <Link
                 href="/profil"
                 className="px-4 py-2 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep"
               >
-                {fullName ? fullName.split(" ")[0] : "Profil"}
+                {fullName ? fullName.split(" ")[0] : t("profile")}
               </Link>
             </>
           ) : (
             <>
               <Link href="/giris" className="px-4 py-2 rounded-md text-sm font-medium border border-ink">
-                Giriş
+                {t("login")}
               </Link>
               <Link
                 href="/qeydiyyat"
                 className="px-4 py-2 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep"
               >
-                Qeydiyyat
+                {t("register")}
               </Link>
             </>
           )}

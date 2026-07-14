@@ -1,19 +1,21 @@
 import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PropertyCard } from "@/components/property/property-card";
 import { ImageGallery } from "@/components/property/image-gallery";
 import { ContactOwnerBox } from "@/components/property/contact-owner-box";
 
-const featureLabels: { key: string; label: string }[] = [
-  { key: "is_renovated", label: "Təmirli" },
-  { key: "is_furnished", label: "Əşyalı" },
-  { key: "has_balcony", label: "Balkon var" },
-  { key: "has_elevator", label: "Lift var" },
-  { key: "utilities_included", label: "Kommunal daxildir" },
-];
+type Props = { params: Promise<{ id: string; locale: string }> };
 
-export default async function ElanDetayPage({ params }: { params: { id: string } }) {
+export default async function ElanDetayPage({ params }: Props) {
+  const { id, locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("listing");
+  const tFeatures = await getTranslations("features");
+  const tCommon = await getTranslations("common");
+
   const supabase = createClient();
 
   const { data: property } = await supabase
@@ -23,13 +25,13 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
        property_images ( url, sort_order ),
        profiles ( id, full_name, avatar_url, phone )`
     )
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (!property) notFound();
 
   // baxış sayğacını artır (nəticəni gözləməyə ehtiyac yoxdur)
-  supabase.rpc("increment_view_count", { prop_id: params.id });
+  supabase.rpc("increment_view_count", { prop_id: id });
 
   const {
     data: { user },
@@ -55,6 +57,14 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
   const cityName = (property.cities as any)?.name;
   const districtName = (property.districts as any)?.name;
 
+  const featureKeys = [
+    "is_renovated",
+    "is_furnished",
+    "has_balcony",
+    "has_elevator",
+    "utilities_included",
+  ] as const;
+
   return (
     <>
       <SiteHeader />
@@ -78,22 +88,22 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-sm text-teal-deep border-b border-teal-deep mb-4"
                 >
-                  📍 Xəritədə bax
+                  {t("mapLink")}
                 </a>
               )}
 
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="font-mono text-2xl font-medium text-brick">
-                  {property.price} ₼
+                  {property.price} {tCommon("currency")}
                 </span>
-                <span className="text-sm text-ink-soft">/ay</span>
+                <span className="text-sm text-ink-soft">{tCommon("perMonth")}</span>
               </div>
 
               <div className="grid grid-cols-3 gap-3 mb-6 text-sm">
-                <Stat label="Otaq" value={String(property.rooms)} />
-                <Stat label="Sahə" value={`${property.area_m2} m²`} />
+                <Stat label={t("rooms")} value={String(property.rooms)} />
+                <Stat label={t("area")} value={`${property.area_m2} m²`} />
                 <Stat
-                  label="Mərtəbə"
+                  label={t("floor")}
                   value={
                     property.floor && property.total_floors
                       ? `${property.floor}/${property.total_floors}`
@@ -102,21 +112,21 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
                 />
               </div>
 
-              <h2 className="font-display text-lg font-medium mb-2">Ev haqqında</h2>
+              <h2 className="font-display text-lg font-medium mb-2">{t("aboutTitle")}</h2>
               <p className="text-sm text-ink-soft leading-relaxed mb-6 whitespace-pre-line">
-                {property.description || "Təsvir əlavə edilməyib."}
+                {property.description || t("noDescription")}
               </p>
 
-              <h2 className="font-display text-lg font-medium mb-2">Xüsusiyyətlər</h2>
+              <h2 className="font-display text-lg font-medium mb-2">{t("featuresTitle")}</h2>
               <div className="flex flex-wrap gap-2 mb-8">
-                {featureLabels
-                  .filter((f) => property[f.key])
-                  .map((f) => (
+                {featureKeys
+                  .filter((key) => property[key])
+                  .map((key) => (
                     <span
-                      key={f.key}
+                      key={key}
                       className="text-xs text-ink-soft border border-line px-3 py-1.5 rounded-full"
                     >
-                      {f.label}
+                      {tFeatures(key)}
                     </span>
                   ))}
               </div>
@@ -133,15 +143,15 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
             />
 
             <div className="bg-paper border border-line rounded-2xl p-5">
-              <h3 className="font-display text-lg font-medium mb-2">Ev sahibi</h3>
-              <p className="text-sm font-medium">{owner?.full_name ?? "İstifadəçi"}</p>
+              <h3 className="font-display text-lg font-medium mb-2">{t("ownerBoxTitle")}</h3>
+              <p className="text-sm font-medium">{owner?.full_name ?? t("ownerFallback")}</p>
             </div>
           </div>
         </div>
 
         {similar && similar.length > 0 && (
           <div className="mt-14">
-            <h2 className="font-display text-2xl font-medium mb-5">Oxşar elanlar</h2>
+            <h2 className="font-display text-2xl font-medium mb-5">{t("similar")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {similar.map((p: any, i: number) => {
                 const sorted = [...(p.property_images ?? [])].sort(

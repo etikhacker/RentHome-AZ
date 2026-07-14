@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 type RawMessage = {
@@ -35,6 +36,7 @@ export function MessagesClient({
   propertyTitles: Record<string, string>;
   profileNames: Record<string, string>;
 }) {
+  const t = useTranslations("messages");
   const supabase = createClient();
   const [messages, setMessages] = useState<RawMessage[]>(initialMessages);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -51,9 +53,9 @@ export function MessagesClient({
         map.set(key, {
           key,
           propertyId: m.property_id,
-          propertyTitle: propertyTitles[m.property_id] ?? "Elan",
+          propertyTitle: propertyTitles[m.property_id] ?? t("defaultListing"),
           otherId,
-          otherName: profileNames[otherId] ?? "İstifadəçi",
+          otherName: profileNames[otherId] ?? t("defaultUser"),
           lastMessage: m.content,
           lastAt: m.created_at,
           unread: m.receiver_id === currentUserId && !m.is_read,
@@ -63,7 +65,7 @@ export function MessagesClient({
     return Array.from(map.values()).sort(
       (a, b) => new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime()
     );
-  }, [messages, currentUserId, propertyTitles, profileNames]);
+  }, [messages, currentUserId, propertyTitles, profileNames, t]);
 
   const active = conversations.find((c) => c.key === selectedKey) ?? conversations[0] ?? null;
 
@@ -139,7 +141,7 @@ export function MessagesClient({
   }
 
   if (conversations.length === 0) {
-    return <p className="text-sm text-ink-soft">Hələ heç bir mesajın yoxdur.</p>;
+    return <p className="text-sm text-ink-soft">{t("empty")}</p>;
   }
 
   return (
@@ -191,7 +193,7 @@ export function MessagesClient({
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Mesaj yaz..."
+                placeholder={t("inputPlaceholder")}
                 className="flex-1 border border-line rounded-lg px-3 py-2 text-sm bg-white"
               />
               <button
@@ -199,7 +201,7 @@ export function MessagesClient({
                 disabled={sending}
                 className="bg-teal hover:bg-teal-deep text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60"
               >
-                Göndər
+                {t("send")}
               </button>
             </div>
           </>

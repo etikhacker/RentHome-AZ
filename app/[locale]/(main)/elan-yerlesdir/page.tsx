@@ -1,9 +1,16 @@
-import { redirect } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ListingForm } from "@/components/property/listing-form";
 
-export default async function ElanYerlesdirPage() {
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function ElanYerlesdirPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("createListing");
   const supabase = createClient();
 
   const {
@@ -11,7 +18,7 @@ export default async function ElanYerlesdirPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/giris?next=/elan-yerlesdir");
+    redirect({ href: "/giris", locale, query: { next: "/elan-yerlesdir" } });
   }
 
   const { data: profile } = await supabase
@@ -26,11 +33,10 @@ export default async function ElanYerlesdirPage() {
         <SiteHeader />
         <div className="max-w-[600px] mx-auto px-7 py-16 text-center">
           <h1 className="font-display text-2xl font-medium mb-3">
-            Bu bölmə yalnız ev sahibləri üçündür
+            {t("notOwnerTitle")}
           </h1>
           <p className="text-sm text-ink-soft">
-            Elan yerləşdirmək üçün hesabını "Ev sahibi" tipinə keçirməlisən.
-            Profil səhifəndən bunu dəyişə bilərsən.
+            {t("notOwnerText")}
           </p>
         </div>
       </>
@@ -46,9 +52,9 @@ export default async function ElanYerlesdirPage() {
     <>
       <SiteHeader />
       <div className="max-w-[720px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-1">Yeni elan yerləşdir</h1>
+        <h1 className="font-display text-2xl font-medium mb-1">{t("title")}</h1>
         <p className="text-sm text-ink-soft mb-7">
-          Elanın admin təsdiqindən sonra saytda görünəcək.
+          {t("subtitle")}
         </p>
         <ListingForm cities={cities ?? []} ownerId={user.id} />
       </div>

@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
 
 export function FavoriteButton({ propertyId }: { propertyId: string }) {
   const supabase = createClient();
   const router = useRouter();
+  const pathname = usePathname();
 
   const [userId, setUserId] = useState<string | null>(null);
   const [favorited, setFavorited] = useState(false);
@@ -43,7 +44,7 @@ export function FavoriteButton({ propertyId }: { propertyId: string }) {
     e.stopPropagation();
 
     if (!userId) {
-      router.push(`/giris?next=/elan/${propertyId}`);
+      router.push(`/giris?next=${pathname}`);
       return;
     }
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
 
 export function ContactOwnerBox({
@@ -17,17 +18,19 @@ export function ContactOwnerBox({
   ownerWhatsapp: string | null;
   currentUserId: string | null;
 }) {
+  const t = useTranslations("listing");
   const supabase = createClient();
   const router = useRouter();
+  const pathname = usePathname();
 
-  const [message, setMessage] = useState("Salam. Ev hələ boşdurmu?");
+  const [message, setMessage] = useState(t("messagePlaceholder"));
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSend() {
     if (!currentUserId) {
-      router.push(`/giris?next=/elan/${propertyId}`);
+      router.push(`/giris?next=${pathname}`);
       return;
     }
     setLoading(true);
@@ -42,7 +45,7 @@ export function ContactOwnerBox({
 
     setLoading(false);
     if (error) {
-      setError("Mesaj göndərilmədi. Yenidən cəhd et.");
+      setError(t("messageError"));
       return;
     }
     setSent(true);
@@ -50,14 +53,14 @@ export function ContactOwnerBox({
 
   return (
     <div className="bg-paper border border-line rounded-2xl p-5">
-      <h3 className="font-display text-lg font-medium mb-3">Ev sahibi ilə əlaqə</h3>
+      <h3 className="font-display text-lg font-medium mb-3">{t("contactTitle")}</h3>
 
       <div className="flex gap-2 mb-4">
         <a
           href={`tel:${ownerPhone}`}
           className="flex-1 text-center border border-line rounded-lg py-2.5 text-sm font-medium"
         >
-          Zəng et
+          {t("call")}
         </a>
         {ownerWhatsapp && (
           <a
@@ -65,14 +68,14 @@ export function ContactOwnerBox({
             target="_blank"
             className="flex-1 text-center bg-teal text-white rounded-lg py-2.5 text-sm font-medium"
           >
-            WhatsApp
+            {t("whatsapp")}
           </a>
         )}
       </div>
 
       {sent ? (
         <p className="text-sm text-teal-deep bg-teal/10 rounded-lg px-3 py-2">
-          Mesajın göndərildi. Ev sahibi "Mesajlar" bölməsindən cavab yazacaq.
+          {t("messageSent")}
         </p>
       ) : (
         <>
@@ -88,7 +91,7 @@ export function ContactOwnerBox({
             disabled={loading}
             className="w-full bg-brick hover:bg-brick-deep text-white rounded-lg py-2.5 text-sm font-medium disabled:opacity-60"
           >
-            {loading ? "Göndərilir..." : "Mesaj göndər"}
+            {loading ? t("sending") : t("sendMessage")}
           </button>
         </>
       )}

@@ -1,16 +1,23 @@
-import { redirect } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PropertyCard } from "@/components/property/property-card";
 
-export default async function FavorilerimPage() {
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function FavorilerimPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("favorites");
   const supabase = createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/giris?next=/favorilerim");
+  if (!user) redirect({ href: "/giris", locale, query: { next: "/favorilerim" } });
 
   const { data: favorites } = await supabase
     .from("favorites")
@@ -33,12 +40,11 @@ export default async function FavorilerimPage() {
     <>
       <SiteHeader />
       <div className="max-w-[1120px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-6">Favorilərim</h1>
+        <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
 
         {properties.length === 0 ? (
           <p className="text-sm text-ink-soft">
-            Hələ heç bir elanı yadda saxlamamısan. Bəyəndiyin elanların üzərindəki
-            ❤️ işarəsinə klikləyərək bura əlavə edə bilərsən.
+            {t("empty")}
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

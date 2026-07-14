@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import type { PropertyType } from "@/lib/types";
 
@@ -9,6 +10,8 @@ type City = { id: string; name: string };
 type District = { id: string; name: string };
 
 export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: string }) {
+  const t = useTranslations("createListing");
+  const tPropertyType = useTranslations("propertyType");
   const supabase = createClient();
   const router = useRouter();
 
@@ -34,7 +37,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
   function handleImagesChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     if (files.length > 8) {
-      setError("Maksimum 8 şəkil yükləyə bilərsən.");
+      setError(t("maxImagesError"));
       return;
     }
     setError(null);
@@ -70,7 +73,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
     };
 
     if (!payload.title || !payload.city_id || !payload.price || !payload.address) {
-      setError("Başlıq, şəhər, ünvan və qiymət sahələri məcburidir.");
+      setError(t("requiredFieldsError"));
       return;
     }
 
@@ -83,13 +86,13 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
       .single();
 
     if (insertError || !property) {
-      setError("Elan yaradılarkən xəta baş verdi: " + insertError?.message);
+      setError(t("createError", { message: insertError?.message ?? "" }));
       setLoading(false);
       return;
     }
 
     if (images.length > 0) {
-      setUploadProgress(`Şəkillər yüklənir (0/${images.length})`);
+      setUploadProgress(t("uploadingProgress", { current: 0, total: images.length }));
       for (let i = 0; i < images.length; i++) {
         const file = images[i];
         const path = `${property.id}/${i}-${file.name}`;
@@ -99,7 +102,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
           .upload(path, file);
 
         if (uploadError) {
-          setError("Şəkil yükləmə xətası: " + uploadError.message);
+          setError(t("uploadError", { message: uploadError.message }));
           continue;
         }
 
@@ -111,7 +114,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
           .from("property_images")
           .insert({ property_id: property.id, url: publicUrl.publicUrl, sort_order: i });
 
-        setUploadProgress(`Şəkillər yüklənir (${i + 1}/${images.length})`);
+        setUploadProgress(t("uploadingProgress", { current: i + 1, total: images.length }));
       }
     }
 
@@ -123,34 +126,34 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
     <form onSubmit={handleSubmit} className="space-y-6">
       <section className="space-y-3.5">
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
-          Əsas məlumat
+          {t("sectionMain")}
         </h2>
 
-        <Field label="Başlıq">
-          <input name="title" required className="input" placeholder="2 otaqlı, Nəsimi rayonu" />
+        <Field label={t("fields.title")}>
+          <input name="title" required className="input" placeholder={t("fields.titlePlaceholder")} />
         </Field>
 
-        <Field label="Təsvir">
-          <textarea name="description" rows={4} className="input" placeholder="Ev haqqında ətraflı məlumat..." />
+        <Field label={t("fields.description")}>
+          <textarea name="description" rows={4} className="input" placeholder={t("fields.descriptionPlaceholder")} />
         </Field>
 
         <div className="grid grid-cols-2 gap-3.5">
-          <Field label="Şəhər">
+          <Field label={t("fields.city")}>
             <select
               name="city_id"
               required
               onChange={(e) => handleCityChange(e.target.value)}
               className="input"
             >
-              <option value="">Seç</option>
+              <option value="">{t("fields.select")}</option>
               {cities.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
           </Field>
-          <Field label="Rayon">
+          <Field label={t("fields.district")}>
             <select name="district_id" className="input">
-              <option value="">Seç</option>
+              <option value="">{t("fields.select")}</option>
               {districts.map((d) => (
                 <option key={d.id} value={d.id}>{d.name}</option>
               ))}
@@ -158,47 +161,47 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
           </Field>
         </div>
 
-        <Field label="Ünvan">
-          <input name="address" required className="input" placeholder="Küçə, bina" />
+        <Field label={t("fields.address")}>
+          <input name="address" required className="input" placeholder={t("fields.addressPlaceholder")} />
         </Field>
 
-        <Field label="Google Maps linki (istəyə bağlı)">
+        <Field label={t("fields.mapUrl")}>
           <input
             name="map_url"
             type="url"
             className="input"
-            placeholder="https://maps.app.goo.gl/..."
+            placeholder={t("fields.mapUrlPlaceholder")}
           />
         </Field>
       </section>
 
       <section className="space-y-3.5">
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
-          Qiymət və ölçülər
+          {t("sectionPricing")}
         </h2>
         <div className="grid grid-cols-3 gap-3.5">
-          <Field label="Qiymət (₼/ay)">
+          <Field label={t("fields.price")}>
             <input name="price" type="number" required className="input" />
           </Field>
-          <Field label="Otaq sayı">
+          <Field label={t("fields.rooms")}>
             <input name="rooms" type="number" required min={1} className="input" />
           </Field>
-          <Field label="Sahə (m²)">
+          <Field label={t("fields.area")}>
             <input name="area_m2" type="number" required className="input" />
           </Field>
         </div>
         <div className="grid grid-cols-3 gap-3.5">
-          <Field label="Mərtəbə">
+          <Field label={t("fields.floor")}>
             <input name="floor" type="number" className="input" />
           </Field>
-          <Field label="Ümumi mərtəbə">
+          <Field label={t("fields.totalFloors")}>
             <input name="total_floors" type="number" className="input" />
           </Field>
-          <Field label="Ev tipi">
+          <Field label={t("fields.propertyType")}>
             <select name="property_type" className="input" defaultValue="menzil">
-              <option value="menzil">Mənzil</option>
-              <option value="heyet_evi">Həyət evi</option>
-              <option value="ofis">Ofis</option>
+              <option value="menzil">{tPropertyType("menzil")}</option>
+              <option value="heyet_evi">{tPropertyType("heyet_evi")}</option>
+              <option value="ofis">{tPropertyType("ofis")}</option>
             </select>
           </Field>
         </div>
@@ -206,26 +209,26 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
 
       <section className="space-y-2.5">
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
-          Xüsusiyyətlər
+          {t("sectionFeatures")}
         </h2>
         <div className="grid grid-cols-2 gap-2">
-          <Checkbox name="is_renovated" label="Təmirli" />
-          <Checkbox name="is_furnished" label="Əşyalı" />
-          <Checkbox name="has_balcony" label="Balkonu var" />
-          <Checkbox name="has_elevator" label="Lift var" />
-          <Checkbox name="utilities_included" label="Kommunal daxildir" />
+          <Checkbox name="is_renovated" label={t("featureRenovated")} />
+          <Checkbox name="is_furnished" label={t("featureFurnished")} />
+          <Checkbox name="has_balcony" label={t("featureBalcony")} />
+          <Checkbox name="has_elevator" label={t("featureElevator")} />
+          <Checkbox name="utilities_included" label={t("featureUtilities")} />
         </div>
       </section>
 
       <section className="space-y-3.5">
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
-          Əlaqə
+          {t("sectionContact")}
         </h2>
         <div className="grid grid-cols-2 gap-3.5">
-          <Field label="Telefon nömrəsi">
+          <Field label={t("fields.phone")}>
             <input name="phone" required className="input" placeholder="+994 50 123 45 67" />
           </Field>
-          <Field label="WhatsApp (istəyə bağlı)">
+          <Field label={t("fields.whatsapp")}>
             <input name="whatsapp" className="input" placeholder="+994 50 123 45 67" />
           </Field>
         </div>
@@ -233,11 +236,11 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
 
       <section className="space-y-2.5">
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
-          Şəkillər (maks. 8)
+          {t("sectionImages")}
         </h2>
         <input type="file" accept="image/*" multiple onChange={handleImagesChange} className="text-sm" />
         {images.length > 0 && (
-          <p className="text-xs text-ink-soft">{images.length} şəkil seçildi.</p>
+          <p className="text-xs text-ink-soft">{t("imagesSelected", { count: images.length })}</p>
         )}
       </section>
 
@@ -249,7 +252,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
         disabled={loading}
         className="bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-60"
       >
-        {loading ? "Göndərilir..." : "Elanı göndər"}
+        {loading ? t("submitting") : t("submit")}
       </button>
 
       <style jsx>{`

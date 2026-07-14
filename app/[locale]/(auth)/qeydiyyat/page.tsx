@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "next-intl";
 
 export default function QeydiyyatPage() {
+  const t = useTranslations("auth.register");
+  const tCommon = useTranslations("common");
   const supabase = createClient();
   const router = useRouter();
 
@@ -22,7 +24,7 @@ export default function QeydiyyatPage() {
     setError(null);
 
     if (password.length < 6) {
-      setError("Şifrə ən azı 6 simvol olmalıdır.");
+      setError(t("passwordMinLength"));
       return;
     }
 
@@ -41,8 +43,8 @@ export default function QeydiyyatPage() {
     if (error) {
       setError(
         error.message === "User already registered"
-          ? "Bu email artıq qeydiyyatdan keçib."
-          : "Qeydiyyat zamanı xəta baş verdi. Yenidən cəhd et."
+          ? t("errorEmailTaken")
+          : t("errorGeneric")
       );
       return;
     }
@@ -69,10 +71,9 @@ export default function QeydiyyatPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg px-6">
         <div className="w-full max-w-sm bg-paper border border-line rounded-2xl p-7 text-center">
-          <h1 className="font-display text-2xl font-medium mb-2">Email-ini yoxla</h1>
+          <h1 className="font-display text-2xl font-medium mb-2">{t("checkEmailTitle")}</h1>
           <p className="text-sm text-ink-soft">
-            {email} ünvanına təsdiq linki göndərdik. Hesabını aktivləşdirmək
-            üçün ona daxil ol.
+            {t("checkEmailText", { email })}
           </p>
         </div>
       </div>
@@ -82,48 +83,48 @@ export default function QeydiyyatPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg px-6">
       <div className="w-full max-w-sm bg-paper border border-line rounded-2xl p-7">
-        <h1 className="font-display text-2xl font-medium mb-1">Qeydiyyat</h1>
-        <p className="text-sm text-ink-soft mb-6">Yeni hesab yarat.</p>
+        <h1 className="font-display text-2xl font-medium mb-1">{t("title")}</h1>
+        <p className="text-sm text-ink-soft mb-6">{t("subtitle")}</p>
 
         <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="block text-xs text-ink-soft mb-1.5 font-medium">Ad Soyad</label>
+            <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("fullName")}</label>
             <input
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
-              placeholder="Ömər Babayev"
+              placeholder={t("fullNamePlaceholder")}
             />
           </div>
 
           <div>
-            <label className="block text-xs text-ink-soft mb-1.5 font-medium">Email</label>
+            <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("email")}</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
-              placeholder="sen@nümunə.az"
+              placeholder={t("emailPlaceholder")}
             />
           </div>
 
           <div>
-            <label className="block text-xs text-ink-soft mb-1.5 font-medium">Şifrə</label>
+            <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("password")}</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
-              placeholder="ən azı 6 simvol"
+              placeholder={t("passwordPlaceholder")}
             />
           </div>
 
           <div>
             <label className="block text-xs text-ink-soft mb-1.5 font-medium">
-              Hesab tipi
+              {t("accountType")}
             </label>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -135,7 +136,7 @@ export default function QeydiyyatPage() {
                     : "border-line text-ink-soft"
                 }`}
               >
-                İcarəçi
+                {t("roleTenant")}
               </button>
               <button
                 type="button"
@@ -146,7 +147,7 @@ export default function QeydiyyatPage() {
                     : "border-line text-ink-soft"
                 }`}
               >
-                Ev sahibi
+                {t("roleOwner")}
               </button>
             </div>
           </div>
@@ -160,13 +161,13 @@ export default function QeydiyyatPage() {
             disabled={loading}
             className="w-full bg-teal hover:bg-teal-deep text-white rounded-lg py-2.5 text-sm font-medium disabled:opacity-60"
           >
-            {loading ? "Göndərilir..." : "Qeydiyyatdan keç"}
+            {loading ? t("submitting") : t("submit")}
           </button>
         </form>
 
         <div className="flex items-center gap-3 my-5">
           <div className="flex-1 h-px bg-line" />
-          <span className="text-xs text-ink-soft">və ya</span>
+          <span className="text-xs text-ink-soft">{tCommon("or")}</span>
           <div className="flex-1 h-px bg-line" />
         </div>
 
@@ -175,13 +176,13 @@ export default function QeydiyyatPage() {
           className="w-full border border-line rounded-lg py-2.5 text-sm font-medium hover:bg-white flex items-center justify-center gap-2.5"
         >
           <GoogleIcon />
-          Google ilə qeydiyyat
+          {t("google")}
         </button>
 
         <p className="text-sm text-ink-soft text-center mt-6">
-          Artıq hesabın var?{" "}
+          {t("hasAccount")}{" "}
           <Link href="/giris" className="text-teal-deep font-medium">
-            Giriş et
+            {t("loginLink")}
           </Link>
         </p>
       </div>

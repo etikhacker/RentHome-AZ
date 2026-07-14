@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 import { FavoriteButton } from "./favorite-button";
 
 type Props = {
@@ -21,19 +22,21 @@ type Props = {
   tilt?: "left" | "right";
 };
 
-function buildTags(p: Props["property"]) {
+function buildTags(p: Props["property"], t: (key: string) => string) {
   const tags: string[] = [];
-  tags.push(p.is_renovated ? "Təmirli" : "Təmirsiz");
-  if (p.is_furnished) tags.push("Əşyalı");
-  if (p.has_elevator) tags.push("Lift");
-  if (p.has_balcony) tags.push("Balkon");
-  if (p.utilities_included) tags.push("Kommunal daxil");
+  tags.push(p.is_renovated ? t("features.renovated") : t("features.unrenovated"));
+  if (p.is_furnished) tags.push(t("features.furnished"));
+  if (p.has_elevator) tags.push(t("features.elevator"));
+  if (p.has_balcony) tags.push(t("features.balcony"));
+  if (p.utilities_included) tags.push(t("features.utilities"));
   return tags;
 }
 
-export function PropertyCard({ property, tilt = "left" }: Props) {
+export async function PropertyCard({ property, tilt = "left" }: Props) {
+  const t = await getTranslations();
+  const tc = await getTranslations("common");
   const rotation = tilt === "left" ? "-rotate-[0.6deg]" : "rotate-[0.5deg]";
-  const tags = buildTags(property);
+  const tags = buildTags(property, t);
 
   return (
     <div
@@ -54,7 +57,7 @@ export function PropertyCard({ property, tilt = "left" }: Props) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={property.thumbnailUrl} alt={property.title} className="w-full h-full object-cover" />
           ) : (
-            "şəkil"
+            tc("image")
           )}
         </div>
 
@@ -62,7 +65,7 @@ export function PropertyCard({ property, tilt = "left" }: Props) {
         <p className="text-[12.5px] text-ink-soft mb-2.5">
           {property.districtName ?? ""} {property.cityName ? `, ${property.cityName}` : ""}
           {property.floor && property.total_floors
-            ? ` · ${property.floor}/${property.total_floors} mərtəbə`
+            ? ` · ${property.floor}/${property.total_floors} ${t("listing.floor").toLowerCase()}`
             : ""}
         </p>
 
@@ -82,8 +85,8 @@ export function PropertyCard({ property, tilt = "left" }: Props) {
 
       <div className="flex items-center justify-between border-t border-dashed border-line pt-2.5">
         <span className="font-mono text-[15px] font-medium text-brick">
-          {property.price} ₼
-          <small className="font-sans text-[11px] text-ink-soft"> /ay</small>
+          {property.price} {tc("currency")}
+          <small className="font-sans text-[11px] text-ink-soft"> {tc("perMonth")}</small>
         </span>
         <FavoriteButton propertyId={property.id} />
       </div>

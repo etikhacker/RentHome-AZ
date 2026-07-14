@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 export function ContactForm() {
+  const t = useTranslations("contact");
   const supabase = createClient();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,7 +23,7 @@ export function ContactForm() {
 
     setSending(false);
     if (error) {
-      setError("Göndərilmədi, yenidən cəhd et.");
+      setError(t("error"));
       return;
     }
     setSent(true);
@@ -30,7 +32,7 @@ export function ContactForm() {
   if (sent) {
     return (
       <p className="text-sm text-teal-deep bg-teal/10 rounded-lg px-4 py-3">
-        Mesajın bizə çatdı. Tezliklə sənə geri dönəcəyik.
+        {t("success")}
       </p>
     );
   }
@@ -38,7 +40,7 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-3.5">
       <div>
-        <label className="block text-xs text-ink-soft mb-1.5 font-medium">Ad</label>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("name")}</label>
         <input
           required
           value={name}
@@ -47,7 +49,7 @@ export function ContactForm() {
         />
       </div>
       <div>
-        <label className="block text-xs text-ink-soft mb-1.5 font-medium">Email</label>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("email")}</label>
         <input
           type="email"
           required
@@ -57,7 +59,7 @@ export function ContactForm() {
         />
       </div>
       <div>
-        <label className="block text-xs text-ink-soft mb-1.5 font-medium">Mesaj</label>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("message")}</label>
         <textarea
           required
           rows={5}
@@ -72,7 +74,7 @@ export function ContactForm() {
         disabled={sending}
         className="bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-60"
       >
-        {sending ? "Göndərilir..." : "Göndər"}
+        {sending ? t("sending") : t("send")}
       </button>
     </form>
   );
