@@ -1,6 +1,13 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AdminDashboard() {
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function AdminDashboard({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("admin.dashboard");
   const supabase = createClient();
 
   const { data } = await supabase.rpc("admin_dashboard_stats").single();
@@ -13,15 +20,15 @@ export default async function AdminDashboard() {
   } | null;
 
   const cards = [
-    { label: "İstifadəçi sayı", value: stats?.total_users ?? 0 },
-    { label: "Elan sayı (ümumi)", value: stats?.total_properties ?? 0 },
-    { label: "Bugünkü yeni elanlar", value: stats?.new_properties_today ?? 0 },
-    { label: "Aktiv (təsdiqlənmiş) elanlar", value: stats?.active_properties ?? 0 },
+    { label: t("totalUsers"), value: stats?.total_users ?? 0 },
+    { label: t("totalProperties"), value: stats?.total_properties ?? 0 },
+    { label: t("newPropertiesToday"), value: stats?.new_properties_today ?? 0 },
+    { label: t("activeProperties"), value: stats?.active_properties ?? 0 },
   ];
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-medium mb-6">Dashboard</h1>
+      <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {cards.map((c) => (
           <div key={c.label} className="bg-paper border border-line rounded-2xl p-5">

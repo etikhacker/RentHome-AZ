@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
 
 export function ProfileForm({
@@ -17,6 +18,8 @@ export function ProfileForm({
   initialPhone: string | null;
   initialAvatarUrl: string | null;
 }) {
+  const t = useTranslations("profile");
+  const tCommon = useTranslations("common");
   const supabase = createClient();
   const router = useRouter();
 
@@ -52,7 +55,7 @@ export function ProfileForm({
       .eq("id", userId);
 
     setSaving(false);
-    setMessage(error ? "Yadda saxlanılmadı, yenidən cəhd et." : "Yadda saxlanıldı.");
+    setMessage(error ? tCommon("saveError") : tCommon("saved"));
     router.refresh();
   }
 
@@ -70,18 +73,18 @@ export function ProfileForm({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
           ) : (
-            "şəkil"
+            tCommon("image")
           )}
         </div>
         <label className="text-sm text-teal-deep cursor-pointer">
-          {uploading ? "Yüklənir..." : "Şəkli dəyiş"}
+          {uploading ? t("uploading") : t("changeAvatar")}
           <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
         </label>
       </div>
 
       <div className="space-y-3.5 mb-5">
         <div>
-          <label className="block text-xs text-ink-soft mb-1.5 font-medium">Ad Soyad</label>
+          <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("fullName")}</label>
           <input
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
@@ -89,16 +92,16 @@ export function ProfileForm({
           />
         </div>
         <div>
-          <label className="block text-xs text-ink-soft mb-1.5 font-medium">Telefon</label>
+          <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("phone")}</label>
           <input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
-            placeholder="+994 50 123 45 67"
+            placeholder={t("phonePlaceholder")}
           />
         </div>
         <div>
-          <label className="block text-xs text-ink-soft mb-1.5 font-medium">Email</label>
+          <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("email")}</label>
           <input
             value={email}
             disabled
@@ -115,13 +118,13 @@ export function ProfileForm({
           disabled={saving}
           className="bg-teal hover:bg-teal-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium disabled:opacity-60"
         >
-          {saving ? "Saxlanılır..." : "Yadda saxla"}
+          {saving ? tCommon("saving") : tCommon("save")}
         </button>
         <button
           onClick={handleSignOut}
           className="text-sm text-brick border-b border-brick"
         >
-          Çıxış et
+          {t("signOut")}
         </button>
       </div>
     </div>

@@ -1,15 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
-
-const statusLabels: Record<string, { text: string; className: string }> = {
-  gozleyir: { text: "Gözləyir", className: "bg-gold/15 text-gold-deep" },
-  tesdiqlendi: { text: "Təsdiqləndi", className: "bg-teal/15 text-teal-deep" },
-  reddedildi: { text: "Rədd edildi", className: "bg-brick/15 text-brick" },
-};
 
 export function ListingReviewRow({
   id,
@@ -26,6 +20,9 @@ export function ListingReviewRow({
   isPremium: boolean;
   ownerName: string | null;
 }) {
+  const t = useTranslations("admin.listings");
+  const tCommon = useTranslations("common");
+  const tStatus = useTranslations("status");
   const supabase = createClient();
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -45,14 +42,24 @@ export function ListingReviewRow({
   }
 
   async function handleDelete() {
-    if (!confirm("Bu elanı tamamilə silmək istədiyinə əminsən?")) return;
+    if (!confirm(t("confirmDelete"))) return;
     setBusy(true);
     await supabase.from("properties").delete().eq("id", id);
     setBusy(false);
     router.refresh();
   }
 
-  const badge = statusLabels[status] ?? { text: status, className: "bg-line text-ink-soft" };
+  const statusClasses: Record<string, string> = {
+    gozleyir: "bg-gold/15 text-gold-deep",
+    tesdiqlendi: "bg-teal/15 text-teal-deep",
+    reddedildi: "bg-brick/15 text-brick",
+  };
+
+  const knownStatuses = ["gozleyir", "tesdiqlendi", "reddedildi"] as const;
+  const badgeText = (knownStatuses as readonly string[]).includes(status)
+    ? tStatus(status as (typeof knownStatuses)[number])
+    : status;
+  const badgeClass = statusClasses[status] ?? "bg-line text-ink-soft";
 
   return (
     <div className="flex items-center justify-between border border-line rounded-lg px-4 py-3 gap-4">
@@ -61,8 +68,8 @@ export function ListingReviewRow({
           <Link href={`/elan/${id}`} className="text-sm font-medium hover:underline truncate">
             {title}
           </Link>
-          <span className={`text-[11px] px-2 py-0.5 rounded-full shrink-0 ${badge.className}`}>
-            {badge.text}
+          <span className={`text-[11px] px-2 py-0.5 rounded-full shrink-0 ${badgeClass}`}>
+            {badgeText}
           </span>
           {isPremium && (
             <span className="text-[11px] px-2 py-0.5 rounded-full bg-gold text-white shrink-0">
@@ -71,7 +78,7 @@ export function ListingReviewRow({
           )}
         </div>
         <div className="text-xs text-ink-soft mt-1">
-          {ownerName ?? "—"} · {price} ₼/ay
+          {ownerName ?? "—"} · {price} {tCommon("currency")}{tCommon("perMonth")}
         </div>
       </div>
 
@@ -82,7 +89,7 @@ export function ListingReviewRow({
             disabled={busy}
             className="text-xs bg-teal text-white rounded-md px-3 py-1.5 disabled:opacity-50"
           >
-            Təsdiqlə
+            {t("approve")}
           </button>
         )}
         {status !== "reddedildi" && (
@@ -91,7 +98,7 @@ export function ListingReviewRow({
             disabled={busy}
             className="text-xs border border-brick text-brick rounded-md px-3 py-1.5 disabled:opacity-50"
           >
-            Rədd et
+            {t("reject")}
           </button>
         )}
         {status === "tesdiqlendi" && (
@@ -102,7 +109,7 @@ export function ListingReviewRow({
               isPremium ? "border-gold text-gold-deep" : "border-line text-ink-soft"
             }`}
           >
-            {isPremium ? "Premium-u ləğv et" : "Premium ver"}
+            {isPremium ? t("cancelPremium") : t("givePremium")}
           </button>
         )}
         <button
@@ -110,7 +117,7 @@ export function ListingReviewRow({
           disabled={busy}
           className="text-xs text-ink-soft hover:text-brick disabled:opacity-50"
         >
-          Sil
+          {tCommon("delete")}
         </button>
       </div>
     </div>

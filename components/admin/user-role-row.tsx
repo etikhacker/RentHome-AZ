@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
 
 export function UserRoleRow({
@@ -17,6 +18,7 @@ export function UserRoleRow({
   role: string;
   createdAt: string;
 }) {
+  const tRoles = useTranslations("roles");
   const supabase = createClient();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -33,7 +35,7 @@ export function UserRoleRow({
       <td className="py-3 text-sm">{fullName ?? "—"}</td>
       <td className="py-3 text-sm text-ink-soft">{phone ?? "—"}</td>
       <td className="py-3 text-sm text-ink-soft">
-        {new Date(createdAt).toLocaleDateString("az-AZ")}
+        {new Date(createdAt).toLocaleDateString()}
       </td>
       <td className="py-3">
         <select
@@ -42,9 +44,9 @@ export function UserRoleRow({
           onChange={(e) => handleRoleChange(e.target.value)}
           className="border border-line rounded-md px-2 py-1.5 text-sm bg-white"
         >
-          <option value="icarechi">İcarəçi</option>
-          <option value="ev_sahibi">Ev sahibi</option>
-          <option value="admin">Admin</option>
+          <option value="icarechi">{tRoles("icarechi")}</option>
+          <option value="ev_sahibi">{tRoles("ev_sahibi")}</option>
+          <option value="admin">{tRoles("admin")}</option>
         </select>
       </td>
     </tr>

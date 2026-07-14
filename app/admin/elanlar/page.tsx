@@ -1,19 +1,18 @@
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { ListingReviewRow } from "@/components/admin/listing-review-row";
 
-const tabs = [
-  { key: "gozleyir", label: "Gözləyir" },
-  { key: "tesdiqlendi", label: "Təsdiqləndi" },
-  { key: "reddedildi", label: "Rədd edildi" },
-  { key: "hamisi", label: "Hamısı" },
-];
-
-export default async function AdminElanlarPage({
-  searchParams,
-}: {
+type Props = {
   searchParams: { status?: string };
-}) {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function AdminElanlarPage({ searchParams, params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("admin.listings");
   const supabase = createClient();
   const activeTab = searchParams.status ?? "gozleyir";
 
@@ -28,9 +27,16 @@ export default async function AdminElanlarPage({
 
   const { data: properties } = await query;
 
+  const tabs = [
+    { key: "gozleyir", label: t("tabGozleyir") },
+    { key: "tesdiqlendi", label: t("tabTesdiqlendi") },
+    { key: "reddedildi", label: t("tabReddedildi") },
+    { key: "hamisi", label: t("tabHamisi") },
+  ];
+
   return (
     <div>
-      <h1 className="font-display text-2xl font-medium mb-5">Elanların idarə edilməsi</h1>
+      <h1 className="font-display text-2xl font-medium mb-5">{t("title")}</h1>
 
       <div className="flex gap-2 mb-6">
         {tabs.map((tab) => (
@@ -62,7 +68,7 @@ export default async function AdminElanlarPage({
         ))}
 
         {(!properties || properties.length === 0) && (
-          <p className="text-sm text-ink-soft">Bu kateqoriyada elan yoxdur.</p>
+          <p className="text-sm text-ink-soft">{t("empty")}</p>
         )}
       </div>
     </div>

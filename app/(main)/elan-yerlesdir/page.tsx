@@ -18,7 +18,7 @@ export default async function ElanYerlesdirPage({ params }: Props) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect({ href: "/giris", locale, query: { next: "/elan-yerlesdir" } });
+    redirect({ href: { pathname: "/giris", query: { next: "/elan-yerlesdir" } }, locale });
   }
 
   const { data: profile } = await supabase

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
 
 type Notification = {
@@ -20,14 +21,14 @@ const typeIcons: Record<string, string> = {
   premium_bitir: "⭐",
 };
 
-function timeAgo(iso: string) {
+function timeAgo(iso: string, t: (key: string, values?: Record<string, string | number>) => string) {
   const diffMs = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return "indicə";
-  if (mins < 60) return `${mins} dəq əvvəl`;
+  if (mins < 1) return t("timeAgo.now");
+  if (mins < 60) return t("timeAgo.minutesAgo", { count: mins });
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} saat əvvəl`;
-  return `${Math.floor(hours / 24)} gün əvvəl`;
+  if (hours < 24) return t("timeAgo.hoursAgo", { count: hours });
+  return t("timeAgo.daysAgo", { count: Math.floor(hours / 24) });
 }
 
 export function NotificationBell({
@@ -37,6 +38,8 @@ export function NotificationBell({
   userId: string;
   initialUnreadCount: number;
 }) {
+  const t = useTranslations("notifications");
+  const tTime = useTranslations();
   const supabase = createClient();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -108,9 +111,9 @@ export function NotificationBell({
       {open && (
         <div className="absolute right-0 mt-2 w-80 max-h-96 overflow-y-auto bg-paper border border-line rounded-xl shadow-lg z-50">
           {items === null ? (
-            <p className="text-sm text-ink-soft p-4">Yüklənir...</p>
+            <p className="text-sm text-ink-soft p-4">{t("loading")}</p>
           ) : items.length === 0 ? (
-            <p className="text-sm text-ink-soft p-4">Bildiriş yoxdur.</p>
+            <p className="text-sm text-ink-soft p-4">{t("empty")}</p>
           ) : (
             items.map((n) => {
               const content = (
@@ -118,7 +121,7 @@ export function NotificationBell({
                   <span className="text-base shrink-0">{typeIcons[n.type] ?? "🔔"}</span>
                   <div className="min-w-0">
                     <p className="text-sm">{n.content}</p>
-                    <p className="text-xs text-ink-soft mt-0.5">{timeAgo(n.created_at)}</p>
+                    <p className="text-xs text-ink-soft mt-0.5">{timeAgo(n.created_at, tTime)}</p>
                   </div>
                 </div>
               );
