@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 export default function QeydiyyatPage() {
   const supabase = createClient();
+  const router = useRouter();
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,7 +27,7 @@ export default function QeydiyyatPage() {
     }
 
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -42,6 +44,14 @@ export default function QeydiyyatPage() {
           ? "Bu email artıq qeydiyyatdan keçib."
           : "Qeydiyyat zamanı xəta baş verdi. Yenidən cəhd et."
       );
+      return;
+    }
+
+    // "Confirm email" ayarı söndürülübsə, Supabase dərhal sessiya yaradır -
+    // bu halda "email-ini yoxla" göstərmək əvəzinə birbaşa daxil ol
+    if (data.session) {
+      router.push("/");
+      router.refresh();
       return;
     }
 
