@@ -53,6 +53,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
       city_id: String(form.get("city_id") ?? ""),
       district_id: String(form.get("district_id") ?? "") || null,
       address: String(form.get("address") ?? ""),
+      map_url: String(form.get("map_url") ?? "") || null,
       price: Number(form.get("price")),
       rooms: Number(form.get("rooms")),
       floor: form.get("floor") ? Number(form.get("floor")) : null,
@@ -159,6 +160,15 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
 
         <Field label="Ünvan">
           <input name="address" required className="input" placeholder="Küçə, bina" />
+        </Field>
+
+        <Field label="Google Maps linki (istəyə bağlı)">
+          <input
+            name="map_url"
+            type="url"
+            className="input"
+            placeholder="https://maps.app.goo.gl/..."
+          />
         </Field>
       </section>
 

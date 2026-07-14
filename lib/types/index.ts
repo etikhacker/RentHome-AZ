@@ -32,6 +32,7 @@ export type Property = {
   property_type: PropertyType;
   phone: string;
   whatsapp: string | null;
+  map_url: string | null;
   is_premium: boolean;
   status: "gozleyir" | "tesdiqlendi" | "reddedildi";
   view_count: number;

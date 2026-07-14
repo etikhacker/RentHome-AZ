@@ -71,6 +71,17 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
                 {cityName} · {property.address}
               </p>
 
+              {property.map_url && (
+                <a
+                  href={property.map_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-teal-deep border-b border-teal-deep mb-4"
+                >
+                  📍 Xəritədə bax
+                </a>
+              )}
+
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="font-mono text-2xl font-medium text-brick">
                   {property.price} ₼
