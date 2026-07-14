@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 
 export async function SiteHeader() {
   const supabase = createClient();
@@ -8,6 +9,8 @@ export async function SiteHeader() {
   } = await supabase.auth.getUser();
 
   let fullName: string | null = null;
+  let unreadNotifications = 0;
+
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
@@ -15,6 +18,13 @@ export async function SiteHeader() {
       .eq("id", user.id)
       .single();
     fullName = profile?.full_name ?? null;
+
+    const { count } = await supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("is_read", false);
+    unreadNotifications = count ?? 0;
   }
 
   return (
@@ -37,6 +47,7 @@ export async function SiteHeader() {
 
           {user ? (
             <>
+              <NotificationBell userId={user.id} initialUnreadCount={unreadNotifications} />
               <Link href="/mesajlar" className="text-sm text-ink-soft hover:text-ink">
                 Mesajlar
               </Link>

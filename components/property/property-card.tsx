@@ -1,4 +1,5 @@
-import { Heart } from "lucide-react";
+import Link from "next/link";
+import { FavoriteButton } from "./favorite-button";
 
 type Props = {
   property: {
@@ -35,9 +36,8 @@ export function PropertyCard({ property, tilt = "left" }: Props) {
   const tags = buildTags(property);
 
   return (
-    <a
-      href={`/elan/${property.id}`}
-      className={`card-pin relative block bg-paper border border-line p-3.5 pb-4
+    <div
+      className={`card-pin relative bg-paper border border-line p-3.5 pb-4
         transition-transform duration-300 hover:-translate-y-1
         shadow-[0_1px_1px_rgba(22,48,44,0.06),0_8px_16px_-6px_rgba(22,48,44,0.16),0_20px_30px_-18px_rgba(22,48,44,0.18)]
         ${rotation}`}
@@ -48,43 +48,45 @@ export function PropertyCard({ property, tilt = "left" }: Props) {
         </span>
       )}
 
-      <div className="h-[150px] rounded mb-3 bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] flex items-center justify-center text-xs text-ink-soft overflow-hidden">
-        {property.thumbnailUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={property.thumbnailUrl} alt={property.title} className="w-full h-full object-cover" />
-        ) : (
-          "şəkil"
-        )}
-      </div>
-
-      <h3 className="text-[15.5px] font-semibold mb-1">{property.title}</h3>
-      <p className="text-[12.5px] text-ink-soft mb-2.5">
-        {property.districtName ?? ""} {property.cityName ? `, ${property.cityName}` : ""}
-        {property.floor && property.total_floors
-          ? ` · ${property.floor}/${property.total_floors} mərtəbə`
-          : ""}
-      </p>
-
-      {tags.length > 0 && (
-        <div className="flex gap-1.5 flex-wrap mb-3">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-[11px] text-ink-soft border border-line px-2 py-0.5 rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
+      <Link href={`/elan/${property.id}`} className="block">
+        <div className="h-[150px] rounded mb-3 bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] flex items-center justify-center text-xs text-ink-soft overflow-hidden">
+          {property.thumbnailUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={property.thumbnailUrl} alt={property.title} className="w-full h-full object-cover" />
+          ) : (
+            "şəkil"
+          )}
         </div>
-      )}
+
+        <h3 className="text-[15.5px] font-semibold mb-1">{property.title}</h3>
+        <p className="text-[12.5px] text-ink-soft mb-2.5">
+          {property.districtName ?? ""} {property.cityName ? `, ${property.cityName}` : ""}
+          {property.floor && property.total_floors
+            ? ` · ${property.floor}/${property.total_floors} mərtəbə`
+            : ""}
+        </p>
+
+        {tags.length > 0 && (
+          <div className="flex gap-1.5 flex-wrap mb-3">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] text-ink-soft border border-line px-2 py-0.5 rounded-full"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </Link>
 
       <div className="flex items-center justify-between border-t border-dashed border-line pt-2.5">
         <span className="font-mono text-[15px] font-medium text-brick">
           {property.price} ₼
           <small className="font-sans text-[11px] text-ink-soft"> /ay</small>
         </span>
-        <Heart size={16} className="text-ink-soft" />
+        <FavoriteButton propertyId={property.id} />
       </div>
-    </a>
+    </div>
   );
 }
