@@ -45,7 +45,6 @@ export function UserRoleRow({
           className="border border-line rounded-md px-2 py-1.5 text-sm bg-white"
         >
           <option value="icarechi">{tRoles("icarechi")}</option>
-          <option value="ev_sahibi">{tRoles("ev_sahibi")}</option>
           <option value="admin">{tRoles("admin")}</option>
         </select>
       </td>

@@ -27,7 +27,7 @@ export default async function ProfilPage({ params }: Props) {
     .eq("id", user.id)
     .single();
 
-  const isOwner = profile?.role === "ev_sahibi" || profile?.role === "admin";
+  const isOwner = profile?.role === "admin";
 
   const { data: myListings } = isOwner
     ? await supabase
@@ -115,7 +115,7 @@ export default async function ProfilPage({ params }: Props) {
             <div className="bg-paper border border-line rounded-2xl p-5">
               <div className="text-sm text-ink-soft mb-1">{t("accountType")}</div>
               <div className="text-sm font-medium">
-                {profile?.role ? tRoles(profile.role as "admin" | "ev_sahibi" | "icarechi") : ""}
+                {profile?.role ? tRoles(profile.role as "admin" | "icarechi") : ""}
               </div>
             </div>
           </div>
