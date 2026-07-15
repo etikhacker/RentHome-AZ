@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "@/lib/i18n/get-locale";
+import { getMessages } from "next-intl/server";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -26,14 +29,21 @@ export const metadata: Metadata = {
   description: "Azərbaycanda icarə elanları platforması",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="az" className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>
-      <body>{children}</body>
+    <html lang={locale} className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }
