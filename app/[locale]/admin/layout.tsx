@@ -54,6 +54,9 @@ export default async function AdminLayout({ children, params }: Props) {
           <Link href="/admin/istifadeciler" className="pb-3 border-b-2 border-transparent hover:border-teal">
             {t("nav.users")}
           </Link>
+          <Link href="/admin/elaqe" className="pb-3 border-b-2 border-transparent hover:border-teal">
+            {t("nav.contact")}
+          </Link>
         </nav>
         {children}
       </div>

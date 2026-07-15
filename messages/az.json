@@ -236,7 +236,8 @@
     "nav": {
       "dashboard": "Dashboard",
       "listings": "Elanlar",
-      "users": "İstifadəçilər"
+      "users": "İstifadəçilər",
+      "contact": "Mesajlar"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -267,6 +268,14 @@
       "empty": "Hələ istifadəçi yoxdur.",
       "deniedTitle": "Bura yalnız adminlər üçündür",
       "deniedText": "Bu bölməyə girişin yoxdur."
+    },
+    "contact": {
+      "title": "Əlaqə mesajları",
+      "empty": "Hələ mesaj yoxdur.",
+      "markRead": "Oxunmuş et",
+      "markUnread": "Oxunmamış et",
+      "delete": "Sil",
+      "confirmDelete": "Bu mesajı silmək istədiyinə əminsən?"
     }
   },
   "notifications": {
