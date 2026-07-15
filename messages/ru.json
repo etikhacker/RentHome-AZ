@@ -26,7 +26,8 @@
     "favorites": "Избранное",
     "profile": "Профиль",
     "login": "Войти",
-    "register": "Регистрация"
+    "register": "Регистрация",
+    "contact": "Контакты"
   },
   "home": {
     "heroTitle1": "Выбери город.",
