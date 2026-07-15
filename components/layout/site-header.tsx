@@ -1,16 +1,22 @@
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { AuthMenu } from "@/components/layout/auth-menu";
-import { getLocale } from "@/lib/i18n/get-locale";
-import { getDictionary } from "@/lib/i18n/dictionary";
+import { type Locale } from "@/lib/i18n/dictionary";
 
 // Server komponent kimi qalır, lakin artıq Supabase-ə
 // auth.getUser/profiles/notifications sorğuları göndərmir. Bu hissələr
 // indi "use client" AuthMenu-ya köçürülüb ki, hər SSR-də Supabase-ə
 // network round-trip getməsin.
+//
+// Qeyd: locale burda next-intl-in öz getLocale()-i ilə (next-intl/server)
+// alınır — bu, URL-dəki /[locale]/ seqmentindən oxunur və HƏMİŞƏ doğrudur.
+// Əvvəlki versiya lib/i18n/get-locale.ts-dəki cookie-based getLocale()-dən
+// istifadə edirdi ki, bu da URL ilə uyğun olmaya bilərdi (məs. cookie "az"
+// qalıb, amma səhifə /en/... altındadırsa, header səhv dildə görünürdü).
 export async function SiteHeader() {
-  const locale = getLocale();
-  const t = getDictionary(locale).nav;
+  const t = await getTranslations("nav");
+  const locale = (await getLocale()) as Locale;
 
   return (
     <header className="border-b border-line py-5">
@@ -20,10 +26,10 @@ export async function SiteHeader() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-7 text-sm text-ink-soft">
-          <Link href="/elanlar" className="hover:text-ink">{t.search}</Link>
-          <Link href="/elan-yerlesdir" className="hover:text-ink">{t.post}</Link>
-          <Link href="/haqqimizda" className="hover:text-ink">{t.how}</Link>
-          <Link href="/elaqe" className="hover:text-ink">{t.contact}</Link>
+          <Link href="/elanlar" className="hover:text-ink">{t("search")}</Link>
+          <Link href="/elan-yerlesdir" className="hover:text-ink">{t("postListing")}</Link>
+          <Link href="/haqqimizda" className="hover:text-ink">{t("howItWorks")}</Link>
+          <Link href="/elaqe" className="hover:text-ink">{t("contact")}</Link>
         </nav>
 
         <div className="flex items-center gap-3.5">
