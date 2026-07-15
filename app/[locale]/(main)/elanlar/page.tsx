@@ -52,7 +52,21 @@ export default async function ElanlarPage({
   if (searchParams.type) query = query.eq("property_type", searchParams.type);
   if (searchParams.premium === "1") query = query.eq("is_premium", true);
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { data: properties, error } = await query;
+
+  let favoritedIds = new Set<string>();
+  if (user && properties && properties.length > 0) {
+    const { data: favs } = await supabase
+      .from("favorites")
+      .select("property_id")
+      .eq("user_id", user.id)
+      .in("property_id", properties.map((p) => p.id));
+    favoritedIds = new Set((favs ?? []).map((f) => f.property_id));
+  }
 
   return (
     <>
@@ -83,6 +97,8 @@ export default async function ElanlarPage({
                 <PropertyCard
                   key={p.id}
                   tilt={i % 2 === 0 ? "left" : "right"}
+                  currentUserId={user?.id ?? null}
+                  favorited={favoritedIds.has(p.id)}
                   property={{
                     id: p.id,
                     title: p.title,

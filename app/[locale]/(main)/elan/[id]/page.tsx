@@ -1,162 +1,199 @@
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PropertyCard } from "@/components/property/property-card";
-import { createClient } from "@/lib/supabase/server";
-import { getLocale } from "@/lib/i18n/get-locale";
-import { getDictionary } from "@/lib/i18n/dictionary";
+import { ImageGallery } from "@/components/property/image-gallery";
+import { ContactOwnerBox } from "@/components/property/contact-owner-box";
 
-const cardFields =
-  `id, title, price, floor, total_floors, is_premium, is_renovated,
-   is_furnished, has_elevator, has_balcony, utilities_included,
-   cities ( name ), districts ( name ), property_images ( url, sort_order )`;
+const featureLabels: { key: string; label: string }[] = [
+  { key: "is_renovated", label: "Təmirli" },
+  { key: "is_furnished", label: "Əşyalı" },
+  { key: "has_balcony", label: "Balkon var" },
+  { key: "has_elevator", label: "Lift var" },
+  { key: "utilities_included", label: "Kommunal daxildir" },
+];
 
-function toCardProps(p: any) {
-  const sorted = [...(p.property_images ?? [])].sort(
-    (a: any, b: any) => a.sort_order - b.sort_order
-  );
-  return {
-    id: p.id,
-    title: p.title,
-    price: p.price,
-    floor: p.floor,
-    total_floors: p.total_floors,
-    is_premium: p.is_premium,
-    is_renovated: p.is_renovated,
-    is_furnished: p.is_furnished,
-    has_elevator: p.has_elevator,
-    has_balcony: p.has_balcony,
-    utilities_included: p.utilities_included,
-    cityName: p.cities?.name,
-    districtName: p.districts?.name,
-    thumbnailUrl: sorted[0]?.url ?? null,
-  };
-}
-
-export default async function HomePage() {
-  const locale = getLocale();
-  const t = getDictionary(locale).home;
+export default async function ElanDetayPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
 
-  const [{ data: newest }, { data: premium }] = await Promise.all([
+  const [{ data: property }, { data: { user } }] = await Promise.all([
     supabase
       .from("properties")
-      .select(cardFields)
-      .eq("status", "tesdiqlendi")
-      .order("created_at", { ascending: false })
-      .limit(3),
-    supabase
-      .from("properties")
-      .select(cardFields)
-      .eq("status", "tesdiqlendi")
-      .eq("is_premium", true)
-      .order("created_at", { ascending: false })
-      .limit(3),
+      .select(
+        `*, cities ( name ), districts ( name ),
+         property_images ( url, sort_order ),
+         profiles ( id, full_name, avatar_url, phone )`
+      )
+      .eq("id", params.id)
+      .single(),
+    supabase.auth.getUser(),
   ]);
+
+  if (!property) notFound();
+
+  // baxış sayğacını artır (nəticəni gözləməyə ehtiyac yoxdur)
+  supabase.rpc("increment_view_count", { prop_id: params.id });
+
+  const { data: similar } = await supabase
+    .from("properties")
+    .select(
+      `id, title, price, floor, total_floors, is_premium, is_renovated,
+       is_furnished, has_elevator, has_balcony, utilities_included,
+       cities ( name ), districts ( name ), property_images ( url, sort_order )`
+    )
+    .eq("city_id", property.city_id)
+    .eq("status", "tesdiqlendi")
+    .neq("id", property.id)
+    .limit(3);
+
+  let favoritedIds = new Set<string>();
+  if (user && similar && similar.length > 0) {
+    const { data: favs } = await supabase
+      .from("favorites")
+      .select("property_id")
+      .eq("user_id", user.id)
+      .in("property_id", similar.map((p: any) => p.id));
+    favoritedIds = new Set((favs ?? []).map((f) => f.property_id));
+  }
+
+  const images = [...(property.property_images ?? [])].sort(
+    (a: any, b: any) => a.sort_order - b.sort_order
+  );
+
+  const owner = property.profiles as any;
+  const cityName = (property.cities as any)?.name;
+  const districtName = (property.districts as any)?.name;
 
   return (
     <>
       <SiteHeader />
 
-      <section className="pt-16 pb-10">
-        <div className="max-w-[1120px] mx-auto px-7">
-          <h1 className="font-display font-medium text-[46px] leading-[1.12] tracking-tight max-w-xl">
-            {t.heroTitle1}
-            <br />
-            {t.heroTitle2} <em className="italic text-brick not-italic font-medium">{t.heroTitle3}</em>
-          </h1>
-          <p className="mt-3.5 text-[16.5px] text-ink-soft max-w-md">{t.heroSubtitle}</p>
+      <div className="max-w-[1120px] mx-auto px-7 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <ImageGallery images={images} />
 
-          <form className="mt-8 bg-paper border border-line rounded-2xl p-4.5 grid grid-cols-1 md:grid-cols-5 gap-3.5 items-end">
-            <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.city}</label>
-              <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t.allCities}</option>
-                <option>Bakı</option>
-                <option>Gəncə</option>
-                <option>Sumqayıt</option>
-                <option>Mingəçevir</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.priceRange}</label>
-              <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t.all}</option>
-                <option>0 – 300</option>
-                <option>300 – 600</option>
-                <option>600 – 1000</option>
-                <option>1000+</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.rooms}</label>
-              <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t.anyRooms}</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4+</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.propertyType}</label>
-              <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t.all}</option>
-                <option>Mənzil</option>
-                <option>Həyət evi</option>
-                <option>Ofis</option>
-              </select>
-            </div>
-            <button className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium">
-              {t.search_btn}
-            </button>
-          </form>
-        </div>
-      </section>
+            <div className="mt-6">
+              <h1 className="font-display text-[28px] font-medium mb-1">{property.title}</h1>
+              <p className="text-sm text-ink-soft mb-4">
+                {districtName ? `${districtName}, ` : ""}
+                {cityName} · {property.address}
+              </p>
 
-      <section className="pt-12">
-        <div className="max-w-[1120px] mx-auto px-7">
-          <div className="flex items-baseline justify-between mb-5">
-            <h2 className="font-display text-2xl font-medium">{t.newest}</h2>
-            <a href="/elanlar" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
-              {t.seeAll}
-            </a>
+              {property.map_url && (
+                <a
+                  href={property.map_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-teal-deep border-b border-teal-deep mb-4"
+                >
+                  📍 Xəritədə bax
+                </a>
+              )}
+
+              <div className="flex items-baseline gap-2 mb-6">
+                <span className="font-mono text-2xl font-medium text-brick">
+                  {property.price} ₼
+                </span>
+                <span className="text-sm text-ink-soft">/ay</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 mb-6 text-sm">
+                <Stat label="Otaq" value={String(property.rooms)} />
+                <Stat label="Sahə" value={`${property.area_m2} m²`} />
+                <Stat
+                  label="Mərtəbə"
+                  value={
+                    property.floor && property.total_floors
+                      ? `${property.floor}/${property.total_floors}`
+                      : "—"
+                  }
+                />
+              </div>
+
+              <h2 className="font-display text-lg font-medium mb-2">Ev haqqında</h2>
+              <p className="text-sm text-ink-soft leading-relaxed mb-6 whitespace-pre-line">
+                {property.description || "Təsvir əlavə edilməyib."}
+              </p>
+
+              <h2 className="font-display text-lg font-medium mb-2">Xüsusiyyətlər</h2>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {featureLabels
+                  .filter((f) => property[f.key])
+                  .map((f) => (
+                    <span
+                      key={f.key}
+                      className="text-xs text-ink-soft border border-line px-3 py-1.5 rounded-full"
+                    >
+                      {f.label}
+                    </span>
+                  ))}
+              </div>
+            </div>
           </div>
 
-          {!newest || newest.length === 0 ? (
-            <p className="text-sm text-ink-soft">Hələ təsdiqlənmiş elan yoxdur.</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {newest.map((p: any, i: number) => (
-                <PropertyCard key={p.id} property={toCardProps(p)} tilt={i % 2 === 0 ? "left" : "right"} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+          <div className="space-y-5">
+            <ContactOwnerBox
+              propertyId={property.id}
+              ownerId={property.owner_id}
+              ownerPhone={property.phone}
+              ownerWhatsapp={property.whatsapp}
+              currentUserId={user?.id ?? null}
+            />
 
-      {premium && premium.length > 0 && (
-        <section className="pt-14 pb-16">
-          <div className="max-w-[1120px] mx-auto px-7">
-            <div className="flex items-baseline justify-between mb-5">
-              <h2 className="font-display text-2xl font-medium">{t.premium}</h2>
-              <a href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
-                {t.seeAll}
-              </a>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {premium.map((p: any, i: number) => (
-                <PropertyCard key={p.id} property={toCardProps(p)} tilt={i % 2 === 0 ? "left" : "right"} />
-              ))}
+            <div className="bg-paper border border-line rounded-2xl p-5">
+              <h3 className="font-display text-lg font-medium mb-2">Ev sahibi</h3>
+              <p className="text-sm font-medium">{owner?.full_name ?? "İstifadəçi"}</p>
             </div>
           </div>
-        </section>
-      )}
-
-      <footer className="border-t border-line py-7 text-[13px] text-ink-soft">
-        <div className="max-w-[1120px] mx-auto px-7 flex justify-between">
-          <span>© 2026 RentHome AZ</span>
-          <span>Mingəçevir, Azərbaycan</span>
         </div>
-      </footer>
+
+        {similar && similar.length > 0 && (
+          <div className="mt-14">
+            <h2 className="font-display text-2xl font-medium mb-5">Oxşar elanlar</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {similar.map((p: any, i: number) => {
+                const sorted = [...(p.property_images ?? [])].sort(
+                  (a: any, b: any) => a.sort_order - b.sort_order
+                );
+                return (
+                  <PropertyCard
+                    key={p.id}
+                    tilt={i % 2 === 0 ? "left" : "right"}
+                    currentUserId={user?.id ?? null}
+                    favorited={favoritedIds.has(p.id)}
+                    property={{
+                      id: p.id,
+                      title: p.title,
+                      price: p.price,
+                      floor: p.floor,
+                      total_floors: p.total_floors,
+                      is_premium: p.is_premium,
+                      is_renovated: p.is_renovated,
+                      is_furnished: p.is_furnished,
+                      has_elevator: p.has_elevator,
+                      has_balcony: p.has_balcony,
+                      utilities_included: p.utilities_included,
+                      cityName: (p.cities as any)?.name,
+                      districtName: (p.districts as any)?.name,
+                      thumbnailUrl: sorted[0]?.url ?? null,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-paper border border-line rounded-lg py-2.5 text-center">
+      <div className="font-mono font-medium">{value}</div>
+      <div className="text-[11px] text-ink-soft">{label}</div>
+    </div>
   );
 }

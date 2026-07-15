@@ -36,7 +36,7 @@ export default async function HomePage() {
   const t = getDictionary(locale).home;
   const supabase = createClient();
 
-  const [{ data: newest }, { data: premium }, { data: cities }] = await Promise.all([
+  const [{ data: newest }, { data: premium }, { data: cities }, { data: { user } }] = await Promise.all([
     supabase
       .from("properties")
       .select(cardFields)
@@ -51,7 +51,19 @@ export default async function HomePage() {
       .order("created_at", { ascending: false })
       .limit(3),
     supabase.from("cities").select("id, name").order("name"),
+    supabase.auth.getUser(),
   ]);
+
+  const allIds = [...(newest ?? []), ...(premium ?? [])].map((p: any) => p.id);
+  let favoritedIds = new Set<string>();
+  if (user && allIds.length > 0) {
+    const { data: favs } = await supabase
+      .from("favorites")
+      .select("property_id")
+      .eq("user_id", user.id)
+      .in("property_id", allIds);
+    favoritedIds = new Set((favs ?? []).map((f) => f.property_id));
+  }
 
   return (
     <>
@@ -134,7 +146,13 @@ export default async function HomePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {newest.map((p: any, i: number) => (
-                <PropertyCard key={p.id} property={toCardProps(p)} tilt={i % 2 === 0 ? "left" : "right"} />
+                <PropertyCard
+                  key={p.id}
+                  property={toCardProps(p)}
+                  tilt={i % 2 === 0 ? "left" : "right"}
+                  currentUserId={user?.id ?? null}
+                  favorited={favoritedIds.has(p.id)}
+                />
               ))}
             </div>
           )}
@@ -152,7 +170,13 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {premium.map((p: any, i: number) => (
-                <PropertyCard key={p.id} property={toCardProps(p)} tilt={i % 2 === 0 ? "left" : "right"} />
+                <PropertyCard
+                  key={p.id}
+                  property={toCardProps(p)}
+                  tilt={i % 2 === 0 ? "left" : "right"}
+                  currentUserId={user?.id ?? null}
+                  favorited={favoritedIds.has(p.id)}
+                />
               ))}
             </div>
           </div>

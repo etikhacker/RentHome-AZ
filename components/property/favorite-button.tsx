@@ -1,20 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
-import { useRouter, usePathname } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
 
-export function FavoriteButton({ propertyId }: { propertyId: string }) {
+export function FavoriteButton({
+  propertyId,
+  currentUserId,
+  initialFavorited,
+}: {
+  propertyId: string;
+  /** Server-də artıq bilinirsə ötür - hər kartın öz auth sorğusu atmasının qarşısını alır */
+  currentUserId?: string | null;
+  initialFavorited?: boolean;
+}) {
   const supabase = createClient();
   const router = useRouter();
-  const pathname = usePathname();
 
-  const [userId, setUserId] = useState<string | null>(null);
-  const [favorited, setFavorited] = useState(false);
+  const knownUpfront = currentUserId !== undefined;
+  const [userId, setUserId] = useState<string | null>(currentUserId ?? null);
+  const [favorited, setFavorited] = useState(initialFavorited ?? false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (knownUpfront) return; // server artıq ötürüb, təkrar sorğu lazım deyil
     let active = true;
     async function load() {
       const {
@@ -37,14 +47,14 @@ export function FavoriteButton({ propertyId }: { propertyId: string }) {
     return () => {
       active = false;
     };
-  }, [propertyId]);
+  }, [propertyId, knownUpfront]);
 
   async function handleClick(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
 
     if (!userId) {
-      router.push(`/giris?next=${pathname}`);
+      router.push(`/giris?next=/elan/${propertyId}`);
       return;
     }
 
