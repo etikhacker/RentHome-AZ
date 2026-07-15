@@ -1,23 +1,57 @@
 import { SiteHeader } from "@/components/layout/site-header";
 import { PropertyCard } from "@/components/property/property-card";
+import { createClient } from "@/lib/supabase/server";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionary";
 
-// Bu, sadəcə UI üçün nümunə datadır - real versiyada Supabase-dən gələcək
-const yeniElanlar = [
-  { id: "1", title: "2 otaqlı, Nəsimi r.", price: 650, is_premium: false, floor: 4, total_floors: 9, cityName: "Bakı", districtName: "28 May m.", is_renovated: true, is_furnished: true, has_elevator: true, has_balcony: false, utilities_included: false },
-  { id: "2", title: "1 otaqlı studiya", price: 380, is_premium: false, floor: 2, total_floors: 5, cityName: "Bakı", districtName: "Yasamal r.", is_renovated: false, is_furnished: false, has_elevator: false, has_balcony: true, utilities_included: false },
-  { id: "3", title: "3 otaqlı həyət evi", price: 520, is_premium: false, floor: null, total_floors: null, cityName: "Sumqayıt", districtName: "6-cı mikrorayon", is_renovated: false, is_furnished: true, has_elevator: false, has_balcony: false, utilities_included: true },
-];
+const cardFields =
+  `id, title, price, floor, total_floors, is_premium, is_renovated,
+   is_furnished, has_elevator, has_balcony, utilities_included,
+   cities ( name ), districts ( name ), property_images ( url, sort_order )`;
 
-const premiumElanlar = [
-  { id: "4", title: "4 otaqlı, dəniz mənzərəli", price: 1450, is_premium: true, floor: 12, total_floors: 16, cityName: "Bakı", districtName: "Badamdar", is_renovated: true, is_furnished: false, has_elevator: true, has_balcony: true, utilities_included: false },
-  { id: "5", title: "2 otaqlı, tam təmirli", price: 890, is_premium: true, floor: 5, total_floors: 9, cityName: "Bakı", districtName: "Səbail r.", is_renovated: true, is_furnished: true, has_elevator: false, has_balcony: false, utilities_included: true },
-];
+function toCardProps(p: any) {
+  const sorted = [...(p.property_images ?? [])].sort(
+    (a: any, b: any) => a.sort_order - b.sort_order
+  );
+  return {
+    id: p.id,
+    title: p.title,
+    price: p.price,
+    floor: p.floor,
+    total_floors: p.total_floors,
+    is_premium: p.is_premium,
+    is_renovated: p.is_renovated,
+    is_furnished: p.is_furnished,
+    has_elevator: p.has_elevator,
+    has_balcony: p.has_balcony,
+    utilities_included: p.utilities_included,
+    cityName: p.cities?.name,
+    districtName: p.districts?.name,
+    thumbnailUrl: sorted[0]?.url ?? null,
+  };
+}
 
-export default function HomePage() {
+export default async function HomePage() {
   const locale = getLocale();
   const t = getDictionary(locale).home;
+  const supabase = createClient();
+
+  const [{ data: newest }, { data: premium }, { data: cities }] = await Promise.all([
+    supabase
+      .from("properties")
+      .select(cardFields)
+      .eq("status", "tesdiqlendi")
+      .order("created_at", { ascending: false })
+      .limit(3),
+    supabase
+      .from("properties")
+      .select(cardFields)
+      .eq("status", "tesdiqlendi")
+      .eq("is_premium", true)
+      .order("created_at", { ascending: false })
+      .limit(3),
+    supabase.from("cities").select("id, name").order("name"),
+  ]);
 
   return (
     <>
@@ -32,44 +66,51 @@ export default function HomePage() {
           </h1>
           <p className="mt-3.5 text-[16.5px] text-ink-soft max-w-md">{t.heroSubtitle}</p>
 
-          <form className="mt-8 bg-paper border border-line rounded-2xl p-4.5 grid grid-cols-1 md:grid-cols-5 gap-3.5 items-end">
+          <form action="/elanlar" className="mt-8 bg-paper border border-line rounded-2xl p-4.5 grid grid-cols-1 md:grid-cols-6 gap-3.5 items-end">
             <div>
               <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.city}</label>
-              <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t.allCities}</option>
-                <option>Bakı</option>
-                <option>Gəncə</option>
-                <option>Sumqayıt</option>
-                <option>Mingəçevir</option>
+              <select name="city" className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
+                <option value="">{t.allCities}</option>
+                {cities?.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.priceRange}</label>
-              <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t.all}</option>
-                <option>0 – 300</option>
-                <option>300 – 600</option>
-                <option>600 – 1000</option>
-                <option>1000+</option>
-              </select>
+              <label className="block text-xs text-ink-soft mb-1.5 font-medium">Min qiymət (₼)</label>
+              <input
+                type="number"
+                name="min_price"
+                placeholder="0"
+                className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-ink-soft mb-1.5 font-medium">Max qiymət (₼)</label>
+              <input
+                type="number"
+                name="max_price"
+                placeholder="2000"
+                className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
+              />
             </div>
             <div>
               <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.rooms}</label>
-              <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t.anyRooms}</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4+</option>
+              <select name="rooms" className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
+                <option value="">{t.anyRooms}</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4+</option>
               </select>
             </div>
             <div>
               <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.propertyType}</label>
-              <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t.all}</option>
-                <option>Mənzil</option>
-                <option>Həyət evi</option>
-                <option>Ofis</option>
+              <select name="type" className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
+                <option value="">{t.all}</option>
+                <option value="menzil">Mənzil</option>
+                <option value="heyet_evi">Həyət evi</option>
+                <option value="ofis">Ofis</option>
               </select>
             </div>
             <button className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium">
@@ -87,29 +128,36 @@ export default function HomePage() {
               {t.seeAll}
             </a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {yeniElanlar.map((p, i) => (
-              <PropertyCard key={p.id} property={p} tilt={i % 2 === 0 ? "left" : "right"} />
-            ))}
-          </div>
+
+          {!newest || newest.length === 0 ? (
+            <p className="text-sm text-ink-soft">Hələ təsdiqlənmiş elan yoxdur.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {newest.map((p: any, i: number) => (
+                <PropertyCard key={p.id} property={toCardProps(p)} tilt={i % 2 === 0 ? "left" : "right"} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      <section className="pt-14 pb-16">
-        <div className="max-w-[1120px] mx-auto px-7">
-          <div className="flex items-baseline justify-between mb-5">
-            <h2 className="font-display text-2xl font-medium">{t.premium}</h2>
-            <a href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
-              {t.seeAll}
-            </a>
+      {premium && premium.length > 0 && (
+        <section className="pt-14 pb-16">
+          <div className="max-w-[1120px] mx-auto px-7">
+            <div className="flex items-baseline justify-between mb-5">
+              <h2 className="font-display text-2xl font-medium">{t.premium}</h2>
+              <a href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
+                {t.seeAll}
+              </a>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {premium.map((p: any, i: number) => (
+                <PropertyCard key={p.id} property={toCardProps(p)} tilt={i % 2 === 0 ? "left" : "right"} />
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {premiumElanlar.map((p, i) => (
-              <PropertyCard key={p.id} property={p} tilt={i % 2 === 0 ? "left" : "right"} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <footer className="border-t border-line py-7 text-[13px] text-ink-soft">
         <div className="max-w-[1120px] mx-auto px-7 flex justify-between">

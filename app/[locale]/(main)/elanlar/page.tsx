@@ -1,4 +1,3 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PropertyCard } from "@/components/property/property-card";
@@ -9,21 +8,18 @@ type SearchParams = {
   min_price?: string;
   max_price?: string;
   rooms?: string;
+  type?: string;
   renovated?: string;
   furnished?: string;
   elevator?: string;
+  premium?: string;
 };
 
-type Props = {
+export default async function ElanlarPage({
+  searchParams,
+}: {
   searchParams: SearchParams;
-  params: Promise<{ locale: string }>;
-};
-
-export default async function ElanlarPage({ searchParams, params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
-  const t = await getTranslations("listings");
+}) {
   const supabase = createClient();
 
   const { data: cities } = await supabase
@@ -53,6 +49,8 @@ export default async function ElanlarPage({ searchParams, params }: Props) {
   if (searchParams.renovated === "1") query = query.eq("is_renovated", true);
   if (searchParams.furnished === "1") query = query.eq("is_furnished", true);
   if (searchParams.elevator === "1") query = query.eq("has_elevator", true);
+  if (searchParams.type) query = query.eq("property_type", searchParams.type);
+  if (searchParams.premium === "1") query = query.eq("is_premium", true);
 
   const { data: properties, error } = await query;
 
@@ -62,17 +60,17 @@ export default async function ElanlarPage({ searchParams, params }: Props) {
 
       <section className="pt-10 pb-16">
         <div className="max-w-[1120px] mx-auto px-7">
-          <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
+          <h1 className="font-display text-2xl font-medium mb-6">Bütün elanlar</h1>
 
           <PropertyFilters cities={cities ?? []} searchParams={searchParams} />
 
           {error && (
-            <p className="text-sm text-brick">{t("errorLoad")}</p>
+            <p className="text-sm text-brick">Elanları yükləyərkən xəta baş verdi.</p>
           )}
 
           {!error && properties?.length === 0 && (
             <p className="text-sm text-ink-soft">
-              {t("noResults")}
+              Bu filtrlərə uyğun elan tapılmadı. Filtrləri dəyişib yenidən yoxla.
             </p>
           )}
 

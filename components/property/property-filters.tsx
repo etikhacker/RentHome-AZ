@@ -1,7 +1,3 @@
-"use client";
-
-import { useTranslations } from "next-intl";
-
 type City = { id: string; name: string };
 
 export function PropertyFilters({
@@ -11,22 +7,19 @@ export function PropertyFilters({
   cities: City[];
   searchParams: Record<string, string | undefined>;
 }) {
-  const t = useTranslations("listings.filter");
-  const tCommon = useTranslations("common");
-
   return (
     <form
       method="get"
-      className="bg-paper border border-line rounded-2xl p-4.5 grid grid-cols-2 md:grid-cols-4 gap-3.5 items-end mb-8"
+      className="bg-paper border border-line rounded-2xl p-4.5 grid grid-cols-2 md:grid-cols-5 gap-3.5 items-end mb-8"
     >
       <div>
-        <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("city")}</label>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">Şəhər</label>
         <select
           name="city"
           defaultValue={searchParams.city ?? ""}
           className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
         >
-          <option value="">{t("allCities")}</option>
+          <option value="">Bütün şəhərlər</option>
           {cities.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -36,7 +29,7 @@ export function PropertyFilters({
       </div>
 
       <div>
-        <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("minPrice")}</label>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">Min qiymət (₼)</label>
         <input
           type="number"
           name="min_price"
@@ -47,7 +40,7 @@ export function PropertyFilters({
       </div>
 
       <div>
-        <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("maxPrice")}</label>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">Max qiymət (₼)</label>
         <input
           type="number"
           name="max_price"
@@ -58,17 +51,31 @@ export function PropertyFilters({
       </div>
 
       <div>
-        <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("rooms")}</label>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">Otaq sayı</label>
         <select
           name="rooms"
           defaultValue={searchParams.rooms ?? ""}
           className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
         >
-          <option value="">{t("anyRooms")}</option>
-          <option value="1">{t("rooms1")}</option>
-          <option value="2">{t("rooms2")}</option>
-          <option value="3">{t("rooms3")}</option>
-          <option value="4">{t("rooms4")}</option>
+          <option value="">Fərq etməz</option>
+          <option value="1">1 otaq</option>
+          <option value="2">2 otaq</option>
+          <option value="3">3 otaq</option>
+          <option value="4">4+ otaq</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">Ev tipi</label>
+        <select
+          name="type"
+          defaultValue={searchParams.type ?? ""}
+          className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
+        >
+          <option value="">Hamısı</option>
+          <option value="menzil">Mənzil</option>
+          <option value="heyet_evi">Həyət evi</option>
+          <option value="ofis">Ofis</option>
         </select>
       </div>
 
@@ -80,7 +87,7 @@ export function PropertyFilters({
             value="1"
             defaultChecked={searchParams.renovated === "1"}
           />
-          {t("renovated")}
+          Təmirli
         </label>
         <label className="flex items-center gap-2 text-sm text-ink-soft">
           <input
@@ -89,7 +96,7 @@ export function PropertyFilters({
             value="1"
             defaultChecked={searchParams.furnished === "1"}
           />
-          {t("furnished")}
+          Əşyalı
         </label>
         <label className="flex items-center gap-2 text-sm text-ink-soft">
           <input
@@ -98,20 +105,20 @@ export function PropertyFilters({
             value="1"
             defaultChecked={searchParams.elevator === "1"}
           />
-          {t("elevator")}
+          Lift
         </label>
 
         <button
           type="submit"
           className="ml-auto bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium"
         >
-          {tCommon("search")}
+          Axtar
         </button>
         <a
           href="/elanlar"
           className="text-sm text-ink-soft border-b border-line"
         >
-          {tCommon("reset")}
+          Sıfırla
         </a>
       </div>
     </form>
