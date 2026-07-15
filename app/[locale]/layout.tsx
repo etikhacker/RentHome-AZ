@@ -1,68 +1,39 @@
 import type { Metadata } from "next";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
+import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-type Props = {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-fraunces",
+  display: "swap",
+});
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
+  display: "swap",
+});
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["500"],
+  variable: "--font-plex-mono",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "RentHome AZ — Kirayə elanları",
+  description: "Azərbaycanda icarə elanları platforması",
 };
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
-
-export async function generateMetadata({
-  params,
+export default function RootLayout({
+  children,
 }: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "nav" });
-
-  const titles: Record<string, string> = {
-    az: "RentHome AZ — Kirayə elanları",
-    en: "RentHome AZ — Rental listings",
-    ru: "RentHome AZ — Объявления об аренде",
-  };
-  const descriptions: Record<string, string> = {
-    az: "Azərbaycanda icarə elanları platforması",
-    en: "Rental listings platform in Azerbaijan",
-    ru: "Платформа объявлений об аренде в Азербайджане",
-  };
-
-  return {
-    title: titles[locale] ?? titles.az,
-    description: descriptions[locale] ?? descriptions.az,
-    icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon.ico",
-      apple: "/icon.png",
-    },
-  };
-}
-
-export default async function LocaleLayout({ children, params }: Props) {
-  const { locale } = await params;
-
-  if (!(routing.locales as readonly string[]).includes(locale)) {
-    notFound();
-  }
-
-  // Enables static rendering
-  setRequestLocale(locale);
-
-  const messages = await getMessages();
-
+  children: React.ReactNode;
+}) {
   return (
-    <html lang={locale}>
-      <body>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-      </body>
+    <html lang="az" className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

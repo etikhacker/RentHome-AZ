@@ -1,40 +1,31 @@
 "use client";
 
-import { useTransition } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import { useRouter, usePathname } from "@/i18n/routing";
-import { routing } from "@/i18n/routing";
-import { Languages } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { type Locale } from "@/lib/i18n/dictionary";
 
-export function LanguageSwitcher() {
-  const t = useTranslations("language");
-  const locale = useLocale();
+const labels: Record<Locale, string> = { az: "AZ", en: "EN", ru: "RU" };
+
+export function LanguageSwitcher({ current }: { current: Locale }) {
   const router = useRouter();
-  const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
 
-  function handleChange(nextLocale: string) {
-    startTransition(() => {
-      router.replace(pathname, { locale: nextLocale as (typeof routing.locales)[number] });
-    });
+  function setLocale(locale: Locale) {
+    document.cookie = `locale=${locale}; path=/; max-age=${60 * 60 * 24 * 365}`;
+    router.refresh();
   }
 
   return (
-    <div className="relative flex items-center gap-1.5 text-[13px] text-ink-soft border border-line px-2.5 py-1 rounded">
-      <Languages size={14} />
-      <select
-        value={locale}
-        disabled={isPending}
-        onChange={(e) => handleChange(e.target.value)}
-        className="bg-transparent text-ink-soft focus:outline-none cursor-pointer pr-1"
-        aria-label={t("switch")}
-      >
-        {routing.locales.map((l) => (
-          <option key={l} value={l} className="text-ink">
-            {l.toUpperCase()}
-          </option>
-        ))}
-      </select>
+    <div className="flex items-center border border-line rounded overflow-hidden text-[13px]">
+      {(Object.keys(labels) as Locale[]).map((locale) => (
+        <button
+          key={locale}
+          onClick={() => setLocale(locale)}
+          className={`px-2 py-1 ${
+            current === locale ? "bg-teal text-white" : "text-ink-soft hover:bg-white"
+          }`}
+        >
+          {labels[locale]}
+        </button>
+      ))}
     </div>
   );
 }

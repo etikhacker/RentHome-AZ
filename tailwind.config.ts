@@ -15,9 +15,9 @@ const config: Config = {
         line: "rgba(22,48,44,0.14)",
       },
       fontFamily: {
-        display: ["Fraunces", "serif"],
-        sans: ["Inter", "sans-serif"],
-        mono: ["IBM Plex Mono", "monospace"],
+        display: ["var(--font-fraunces)", "serif"],
+        sans: ["var(--font-inter)", "sans-serif"],
+        mono: ["var(--font-plex-mono)", "monospace"],
       },
       borderRadius: {
         card: "10px",

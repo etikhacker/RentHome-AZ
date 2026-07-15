@@ -1,11 +1,7 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/routing";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PropertyCard } from "@/components/property/property-card";
-
-type Props = {
-  params: Promise<{ locale: string }>;
-};
+import { getLocale } from "@/lib/i18n/get-locale";
+import { getDictionary } from "@/lib/i18n/dictionary";
 
 // Bu, sadəcə UI üçün nümunə datadır - real versiyada Supabase-dən gələcək
 const yeniElanlar = [
@@ -19,12 +15,9 @@ const premiumElanlar = [
   { id: "5", title: "2 otaqlı, tam təmirli", price: 890, is_premium: true, floor: 5, total_floors: 9, cityName: "Bakı", districtName: "Səbail r.", is_renovated: true, is_furnished: true, has_elevator: false, has_balcony: false, utilities_included: true },
 ];
 
-export default async function HomePage({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
-  const t = await getTranslations("home");
-  const tc = await getTranslations("common");
+export default function HomePage() {
+  const locale = getLocale();
+  const t = getDictionary(locale).home;
 
   return (
     <>
@@ -33,56 +26,54 @@ export default async function HomePage({ params }: Props) {
       <section className="pt-16 pb-10">
         <div className="max-w-[1120px] mx-auto px-7">
           <h1 className="font-display font-medium text-[46px] leading-[1.12] tracking-tight max-w-xl">
-            {t("heroTitle1")}
+            {t.heroTitle1}
             <br />
-            {t("heroTitle2")} <em className="italic text-brick not-italic font-medium">{t("heroTitleHighlight")}</em>.
+            {t.heroTitle2} <em className="italic text-brick not-italic font-medium">{t.heroTitle3}</em>
           </h1>
-          <p className="mt-3.5 text-[16.5px] text-ink-soft max-w-md">
-            {t("heroSubtitle")}
-          </p>
+          <p className="mt-3.5 text-[16.5px] text-ink-soft max-w-md">{t.heroSubtitle}</p>
 
           <form className="mt-8 bg-paper border border-line rounded-2xl p-4.5 grid grid-cols-1 md:grid-cols-5 gap-3.5 items-end">
             <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("search.city")}</label>
+              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.city}</label>
               <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t("search.allCities")}</option>
-                <option>{t("search.cityBaku")}</option>
-                <option>{t("search.cityGanja")}</option>
-                <option>{t("search.citySumgait")}</option>
-                <option>{t("search.cityMingachevir")}</option>
+                <option>{t.allCities}</option>
+                <option>Bakı</option>
+                <option>Gəncə</option>
+                <option>Sumqayıt</option>
+                <option>Mingəçevir</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("search.priceRange")}</label>
+              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.priceRange}</label>
               <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t("search.any")}</option>
-                <option>{t("search.priceRange1")}</option>
-                <option>{t("search.priceRange2")}</option>
-                <option>{t("search.priceRange3")}</option>
-                <option>{t("search.priceRange4")}</option>
+                <option>{t.all}</option>
+                <option>0 – 300</option>
+                <option>300 – 600</option>
+                <option>600 – 1000</option>
+                <option>1000+</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("search.rooms")}</label>
+              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.rooms}</label>
               <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t("search.anyRooms")}</option>
-                <option>{t("search.rooms1")}</option>
-                <option>{t("search.rooms2")}</option>
-                <option>{t("search.rooms3")}</option>
-                <option>{t("search.rooms4")}</option>
+                <option>{t.anyRooms}</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4+</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("search.propertyType")}</label>
+              <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.propertyType}</label>
               <select className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
-                <option>{t("search.anyType")}</option>
-                <option>{t("search.typeApartment")}</option>
-                <option>{t("search.typeHouse")}</option>
-                <option>{t("search.typeOffice")}</option>
+                <option>{t.all}</option>
+                <option>Mənzil</option>
+                <option>Həyət evi</option>
+                <option>Ofis</option>
               </select>
             </div>
             <button className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium">
-              {tc("search")}
+              {t.search_btn}
             </button>
           </form>
         </div>
@@ -91,10 +82,10 @@ export default async function HomePage({ params }: Props) {
       <section className="pt-12">
         <div className="max-w-[1120px] mx-auto px-7">
           <div className="flex items-baseline justify-between mb-5">
-            <h2 className="font-display text-2xl font-medium">{t("newListings")}</h2>
-            <Link href="/elanlar" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
-              {tc("viewAll")}
-            </Link>
+            <h2 className="font-display text-2xl font-medium">{t.newest}</h2>
+            <a href="/elanlar" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
+              {t.seeAll}
+            </a>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {yeniElanlar.map((p, i) => (
@@ -107,10 +98,10 @@ export default async function HomePage({ params }: Props) {
       <section className="pt-14 pb-16">
         <div className="max-w-[1120px] mx-auto px-7">
           <div className="flex items-baseline justify-between mb-5">
-            <h2 className="font-display text-2xl font-medium">{t("premiumListings")}</h2>
-            <Link href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
-              {tc("viewAll")}
-            </Link>
+            <h2 className="font-display text-2xl font-medium">{t.premium}</h2>
+            <a href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
+              {t.seeAll}
+            </a>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {premiumElanlar.map((p, i) => (
@@ -122,8 +113,8 @@ export default async function HomePage({ params }: Props) {
 
       <footer className="border-t border-line py-7 text-[13px] text-ink-soft">
         <div className="max-w-[1120px] mx-auto px-7 flex justify-between">
-          <span>{t("footer.copyright")}</span>
-          <span>{t("footer.location")}</span>
+          <span>© 2026 RentHome AZ</span>
+          <span>Mingəçevir, Azərbaycan</span>
         </div>
       </footer>
     </>
