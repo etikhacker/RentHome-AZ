@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
+import Link from "next/link";
+import { Bell } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Notification = {
@@ -21,14 +21,14 @@ const typeIcons: Record<string, string> = {
   premium_bitir: "⭐",
 };
 
-function timeAgo(iso: string, t: (key: string, values?: Record<string, string | number>) => string) {
+function timeAgo(iso: string) {
   const diffMs = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return t("timeAgo.now");
-  if (mins < 60) return t("timeAgo.minutesAgo", { count: mins });
+  if (mins < 1) return "indicə";
+  if (mins < 60) return `${mins} dəq əvvəl`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return t("timeAgo.hoursAgo", { count: hours });
-  return t("timeAgo.daysAgo", { count: Math.floor(hours / 24) });
+  if (hours < 24) return `${hours} saat əvvəl`;
+  return `${Math.floor(hours / 24)} gün əvvəl`;
 }
 
 export function NotificationBell({
@@ -38,14 +38,13 @@ export function NotificationBell({
   userId: string;
   initialUnreadCount: number;
 }) {
-  const t = useTranslations("notifications");
-  const tTime = useTranslations();
   const supabase = createClient();
   const ref = useRef<HTMLDivElement>(null);
 
   const [open, setOpen] = useState(false);
   const [unread, setUnread] = useState(initialUnreadCount);
   const [items, setItems] = useState<Notification[] | null>(null);
+  const [toasts, setToasts] = useState<Notification[]>([]);
 
   useEffect(() => {
     function handleOutside(e: MouseEvent) {
@@ -60,11 +59,22 @@ export function NotificationBell({
       .channel("notifications-realtime")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "notifications" },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${userId}`,
+        },
         (payload) => {
           const n = payload.new as Notification;
-          if (n.is_read === false) setUnread((c) => c + 1);
+          setUnread((c) => c + 1);
           setItems((prev) => (prev ? [n, ...prev] : prev));
+
+          // canlı toast göstər, bir neçə saniyədən sonra özü yox olsun
+          setToasts((prev) => [...prev, n]);
+          setTimeout(() => {
+            setToasts((prev) => prev.filter((t) => t.id !== n.id));
+          }, 6000);
         }
       )
       .subscribe();
@@ -72,6 +82,10 @@ export function NotificationBell({
       supabase.removeChannel(channel);
     };
   }, [userId]);
+
+  function dismissToast(id: string) {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }
 
   async function handleToggle() {
     const next = !open;
@@ -98,12 +112,44 @@ export function NotificationBell({
   }
 
   return (
-    <div className="relative" ref={ref}>
-      <button onClick={handleToggle} className="relative text-sm text-ink-soft hover:text-ink">
-        🔔
+    <>
+      <div className="fixed top-4 right-4 z-[100] space-y-2 w-80 max-w-[90vw]">
+        {toasts.map((n) => {
+          const inner = (
+            <div className="bg-paper border border-line rounded-xl shadow-lg p-3.5 flex gap-2.5 items-start animate-in">
+              <span className="text-base shrink-0">{typeIcons[n.type] ?? "🔔"}</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm">{n.content}</p>
+                <p className="text-xs text-ink-soft mt-0.5">indicə</p>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  dismissToast(n.id);
+                }}
+                className="text-ink-soft hover:text-ink text-sm shrink-0"
+              >
+                ×
+              </button>
+            </div>
+          );
+          return n.related_property_id ? (
+            <Link key={n.id} href={`/elan/${n.related_property_id}`} className="block">
+              {inner}
+            </Link>
+          ) : (
+            <div key={n.id}>{inner}</div>
+          );
+        })}
+      </div>
+
+      <div className="relative" ref={ref}>
+      <button onClick={handleToggle} className="relative text-ink-soft hover:text-ink p-1">
+        <Bell size={19} />
         {unread > 0 && (
-          <span className="absolute -top-1.5 -right-2 bg-brick text-white text-[10px] rounded-full min-w-[16px] h-[16px] px-1 flex items-center justify-center">
-            {unread}
+          <span className="absolute -top-1 -right-1 bg-brick text-white text-[10px] leading-none rounded-full min-w-[16px] h-[16px] px-1 flex items-center justify-center border-2 border-bg">
+            {unread > 9 ? "9+" : unread}
           </span>
         )}
       </button>
@@ -111,9 +157,9 @@ export function NotificationBell({
       {open && (
         <div className="absolute right-0 mt-2 w-80 max-h-96 overflow-y-auto bg-paper border border-line rounded-xl shadow-lg z-50">
           {items === null ? (
-            <p className="text-sm text-ink-soft p-4">{t("loading")}</p>
+            <p className="text-sm text-ink-soft p-4">Yüklənir...</p>
           ) : items.length === 0 ? (
-            <p className="text-sm text-ink-soft p-4">{t("empty")}</p>
+            <p className="text-sm text-ink-soft p-4">Bildiriş yoxdur.</p>
           ) : (
             items.map((n) => {
               const content = (
@@ -121,7 +167,7 @@ export function NotificationBell({
                   <span className="text-base shrink-0">{typeIcons[n.type] ?? "🔔"}</span>
                   <div className="min-w-0">
                     <p className="text-sm">{n.content}</p>
-                    <p className="text-xs text-ink-soft mt-0.5">{timeAgo(n.created_at, tTime)}</p>
+                    <p className="text-xs text-ink-soft mt-0.5">{timeAgo(n.created_at)}</p>
                   </div>
                 </div>
               );
@@ -136,6 +182,7 @@ export function NotificationBell({
           )}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
