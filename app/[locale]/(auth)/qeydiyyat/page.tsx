@@ -14,7 +14,6 @@ export default function QeydiyyatPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"icarechi" | "ev_sahibi">("icarechi");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -33,7 +32,7 @@ export default function QeydiyyatPage() {
       email,
       password,
       options: {
-        data: { full_name: fullName, role },
+        data: { full_name: fullName },
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
@@ -61,10 +60,12 @@ export default function QeydiyyatPage() {
   }
 
   async function handleGoogleSignup() {
-    await supabase.auth.signInWithOAuth({
+    setError(null);
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
+    if (error) setError("Google ilə qeydiyyat mümkün olmadı: " + error.message);
   }
 
   if (done) {
@@ -120,36 +121,6 @@ export default function QeydiyyatPage() {
               className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
               placeholder={t("passwordPlaceholder")}
             />
-          </div>
-
-          <div>
-            <label className="block text-xs text-ink-soft mb-1.5 font-medium">
-              {t("accountType")}
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => setRole("icarechi")}
-                className={`rounded-lg py-2.5 text-sm font-medium border ${
-                  role === "icarechi"
-                    ? "border-teal bg-teal/10 text-teal-deep"
-                    : "border-line text-ink-soft"
-                }`}
-              >
-                {t("roleTenant")}
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole("ev_sahibi")}
-                className={`rounded-lg py-2.5 text-sm font-medium border ${
-                  role === "ev_sahibi"
-                    ? "border-teal bg-teal/10 text-teal-deep"
-                    : "border-line text-ink-soft"
-                }`}
-              >
-                {t("roleOwner")}
-              </button>
-            </div>
           </div>
 
           {error && (
