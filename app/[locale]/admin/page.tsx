@@ -28,12 +28,12 @@ export default async function AdminDashboard({ params }: Props) {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <h1 className="font-display text-xl sm:text-2xl font-medium mb-5 sm:mb-6">{t("title")}</h1>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         {cards.map((c) => (
-          <div key={c.label} className="bg-paper border border-line rounded-2xl p-5">
-            <div className="font-mono text-3xl font-medium text-teal-deep">{c.value}</div>
-            <div className="text-sm text-ink-soft mt-1">{c.label}</div>
+          <div key={c.label} className="bg-paper border border-line rounded-2xl p-4 sm:p-5">
+            <div className="font-mono text-2xl sm:text-3xl font-medium text-teal-deep">{c.value}</div>
+            <div className="text-xs sm:text-sm text-ink-soft mt-1 leading-tight">{c.label}</div>
           </div>
         ))}
       </div>

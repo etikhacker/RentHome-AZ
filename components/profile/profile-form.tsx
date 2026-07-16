@@ -66,8 +66,8 @@ export function ProfileForm({
   }
 
   return (
-    <div className="bg-paper border border-line rounded-2xl p-6">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="bg-paper border border-line rounded-2xl p-4 sm:p-6">
+      <div className="flex items-center gap-4 mb-5 sm:mb-6">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] overflow-hidden flex items-center justify-center text-xs text-ink-soft">
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element

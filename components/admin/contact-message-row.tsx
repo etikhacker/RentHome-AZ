@@ -42,23 +42,23 @@ export function ContactMessageRow({
 
   return (
     <div
-      className={`border border-line rounded-xl p-4 ${
+      className={`border border-line rounded-xl p-3.5 sm:p-4 ${
         isRead ? "bg-white" : "bg-teal/5 border-teal/30"
       }`}
     >
-      <div className="flex items-start justify-between gap-4 mb-2">
-        <div>
-          <p className="text-sm font-medium">{name}</p>
-          <a href={`mailto:${email}`} className="text-xs text-teal-deep hover:underline">
+      <div className="flex items-start justify-between gap-3 sm:gap-4 mb-2 flex-wrap sm:flex-nowrap">
+        <div className="min-w-0">
+          <p className="text-sm font-medium break-words">{name}</p>
+          <a href={`mailto:${email}`} className="text-xs text-teal-deep hover:underline break-all">
             {email}
           </a>
         </div>
-        <p className="text-xs text-ink-soft whitespace-nowrap">
+        <p className="text-xs text-ink-soft whitespace-nowrap shrink-0">
           {new Date(createdAt).toLocaleString()}
         </p>
       </div>
 
-      <p className="text-sm text-ink-soft whitespace-pre-wrap mb-3">{message}</p>
+      <p className="text-sm text-ink-soft whitespace-pre-wrap mb-3 break-words">{message}</p>
 
       <div className="flex gap-3 text-xs">
         <button

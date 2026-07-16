@@ -34,8 +34,8 @@ export default async function ElanYerlesdirPage({ params }: Props) {
     return (
       <>
         <SiteHeader />
-        <div className="max-w-[600px] mx-auto px-7 py-16 text-center">
-          <h1 className="font-display text-2xl font-medium mb-3">
+        <div className="max-w-[600px] mx-auto px-4 sm:px-7 py-12 sm:py-16 text-center">
+          <h1 className="font-display text-xl sm:text-2xl font-medium mb-3">
             {t("notOwnerTitle")}
           </h1>
           <p className="text-sm text-ink-soft">
@@ -54,9 +54,9 @@ export default async function ElanYerlesdirPage({ params }: Props) {
   return (
     <>
       <SiteHeader />
-      <div className="max-w-[720px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-1">{t("title")}</h1>
-        <p className="text-sm text-ink-soft mb-7">
+      <div className="max-w-[720px] mx-auto px-4 sm:px-7 py-7 sm:py-10">
+        <h1 className="font-display text-xl sm:text-2xl font-medium mb-1">{t("title")}</h1>
+        <p className="text-sm text-ink-soft mb-6 sm:mb-7">
           {t("subtitle")}
         </p>
         <ListingForm cities={cities ?? []} ownerId={user.id} />

@@ -72,9 +72,9 @@ export default async function ElanlarPage({
     <>
       <SiteHeader />
 
-      <section className="pt-10 pb-16">
-        <div className="max-w-[1120px] mx-auto px-7">
-          <h1 className="font-display text-2xl font-medium mb-6">Bütün elanlar</h1>
+      <section className="pt-8 sm:pt-10 pb-12 sm:pb-16">
+        <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
+          <h1 className="font-display text-xl sm:text-2xl font-medium mb-5 sm:mb-6">Bütün elanlar</h1>
 
           <PropertyFilters cities={cities ?? []} searchParams={searchParams} />
 

@@ -20,7 +20,7 @@ export default async function AdminElaqePage({ params }: Props) {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-medium mb-6">
+      <h1 className="font-display text-xl sm:text-2xl font-medium mb-5 sm:mb-6">
         {t("title")}
         {unreadCount > 0 && (
           <span className="ml-2 align-middle text-xs font-medium bg-teal text-white rounded-full px-2 py-0.5">

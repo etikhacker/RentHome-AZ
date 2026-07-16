@@ -137,7 +137,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
           <textarea name="description" rows={4} className="input" placeholder={t("fields.descriptionPlaceholder")} />
         </Field>
 
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <Field label={t("fields.city")}>
             <select
               name="city_id"
@@ -179,7 +179,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
           {t("sectionPricing")}
         </h2>
-        <div className="grid grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           <Field label={t("fields.price")}>
             <input name="price" type="number" required className="input" />
           </Field>
@@ -190,7 +190,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
             <input name="area_m2" type="number" required className="input" />
           </Field>
         </div>
-        <div className="grid grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           <Field label={t("fields.floor")}>
             <input name="floor" type="number" className="input" />
           </Field>
@@ -211,7 +211,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
           {t("sectionFeatures")}
         </h2>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <Checkbox name="is_renovated" label={t("featureRenovated")} />
           <Checkbox name="is_furnished" label={t("featureFurnished")} />
           <Checkbox name="has_balcony" label={t("featureBalcony")} />
@@ -224,7 +224,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
           {t("sectionContact")}
         </h2>
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <Field label={t("fields.phone")}>
             <input name="phone" required className="input" placeholder="+994 50 123 45 67" />
           </Field>

@@ -18,10 +18,10 @@ export default async function AdminIstifadecilerPage({ params }: Props) {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
+      <h1 className="font-display text-xl sm:text-2xl font-medium mb-5 sm:mb-6">{t("title")}</h1>
 
-      <div className="bg-paper border border-line rounded-2xl p-5 overflow-x-auto">
-        <table className="w-full">
+      <div className="bg-paper border border-line rounded-2xl p-3.5 sm:p-5 overflow-x-auto">
+        <table className="w-full min-w-[520px]">
           <thead>
             <tr className="border-b border-line text-left">
               <th className="pb-2 text-xs text-ink-soft font-medium">{t("name")}</th>

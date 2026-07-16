@@ -68,13 +68,13 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
     <>
       <SiteHeader />
 
-      <div className="max-w-[1120px] mx-auto px-7 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-[1120px] mx-auto px-4 sm:px-7 py-6 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           <div className="lg:col-span-2">
             <ImageGallery images={images} />
 
-            <div className="mt-6">
-              <h1 className="font-display text-[28px] font-medium mb-1">{property.title}</h1>
+            <div className="mt-5 sm:mt-6">
+              <h1 className="font-display text-[22px] sm:text-[28px] font-medium mb-1 leading-tight">{property.title}</h1>
               <p className="text-sm text-ink-soft mb-4">
                 {districtName ? `${districtName}, ` : ""}
                 {cityName} · {property.address}
@@ -91,14 +91,14 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
                 </a>
               )}
 
-              <div className="flex items-baseline gap-2 mb-6">
+              <div className="flex items-baseline gap-2 mb-5 sm:mb-6">
                 <span className="font-mono text-2xl font-medium text-brick">
                   {property.price} ₼
                 </span>
                 <span className="text-sm text-ink-soft">/ay</span>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 mb-6 text-sm">
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-6 text-sm">
                 <Stat label="Otaq" value={String(property.rooms)} />
                 <Stat label="Sahə" value={`${property.area_m2} m²`} />
                 <Stat
@@ -132,7 +132,7 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
             </div>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5">
             <ContactOwnerBox
               propertyId={property.id}
               ownerId={property.owner_id}
@@ -141,7 +141,7 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
               currentUserId={user?.id ?? null}
             />
 
-            <div className="bg-paper border border-line rounded-2xl p-5">
+            <div className="bg-paper border border-line rounded-2xl p-4 sm:p-5">
               <h3 className="font-display text-lg font-medium mb-2">Ev sahibi</h3>
               <p className="text-sm font-medium">{owner?.full_name ?? "İstifadəçi"}</p>
             </div>
@@ -149,9 +149,9 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
         </div>
 
         {similar && similar.length > 0 && (
-          <div className="mt-14">
-            <h2 className="font-display text-2xl font-medium mb-5">Oxşar elanlar</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-12 sm:mt-14">
+            <h2 className="font-display text-xl sm:text-2xl font-medium mb-5">Oxşar elanlar</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
               {similar.map((p: any, i: number) => {
                 const sorted = [...(p.property_images ?? [])].sort(
                   (a: any, b: any) => a.sort_order - b.sort_order
@@ -191,9 +191,9 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-paper border border-line rounded-lg py-2.5 text-center">
-      <div className="font-mono font-medium">{value}</div>
-      <div className="text-[11px] text-ink-soft">{label}</div>
+    <div className="bg-paper border border-line rounded-lg py-2.5 text-center px-1.5">
+      <div className="font-mono font-medium text-sm sm:text-base">{value}</div>
+      <div className="text-[10px] sm:text-[11px] text-ink-soft">{label}</div>
     </div>
   );
 }

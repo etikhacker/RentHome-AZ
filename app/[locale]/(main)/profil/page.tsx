@@ -45,14 +45,14 @@ export default async function ProfilPage() {
   return (
     <>
       <SiteHeader />
-      <div className="max-w-[900px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-3">Profil</h1>
-        <div className="mb-6">
+      <div className="max-w-[900px] mx-auto px-4 sm:px-7 py-7 sm:py-10">
+        <h1 className="font-display text-xl sm:text-2xl font-medium mb-3">Profil</h1>
+        <div className="mb-5 sm:mb-6">
           <PushPermissionButton userId={user.id} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+          <div className="md:col-span-2 space-y-5 sm:space-y-6">
             <ProfileForm
               userId={user.id}
               email={user.email ?? ""}
@@ -62,12 +62,12 @@ export default async function ProfilPage() {
             />
 
             {isOwner && (
-              <div className="bg-paper border border-line rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4">
+              <div className="bg-paper border border-line rounded-2xl p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-4 gap-3">
                   <h2 className="font-display text-lg font-medium">Elanlarım</h2>
                   <Link
                     href="/elan-yerlesdir"
-                    className="text-sm text-teal-deep border-b border-teal-deep"
+                    className="text-sm text-teal-deep border-b border-teal-deep whitespace-nowrap"
                   >
                     + Yeni elan
                   </Link>
@@ -92,10 +92,10 @@ export default async function ProfilPage() {
             )}
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3.5 sm:space-y-4">
             <Link
               href="/favorilerim"
-              className="block bg-paper border border-line rounded-2xl p-5 hover:border-teal"
+              className="block bg-paper border border-line rounded-2xl p-4 sm:p-5 hover:border-teal"
             >
               <div className="text-2xl font-mono font-medium">{favoriteCount ?? 0}</div>
               <div className="text-sm text-ink-soft">Yadda saxlanılan elan</div>
@@ -103,13 +103,13 @@ export default async function ProfilPage() {
 
             <Link
               href="/mesajlar"
-              className="block bg-paper border border-line rounded-2xl p-5 hover:border-teal"
+              className="block bg-paper border border-line rounded-2xl p-4 sm:p-5 hover:border-teal"
             >
               <div className="text-2xl font-mono font-medium">{unreadCount ?? 0}</div>
               <div className="text-sm text-ink-soft">Oxunmamış mesaj</div>
             </Link>
 
-            <div className="bg-paper border border-line rounded-2xl p-5">
+            <div className="bg-paper border border-line rounded-2xl p-4 sm:p-5">
               <div className="text-sm text-ink-soft mb-1">Hesab tipi</div>
               <div className="text-sm font-medium">
                 {profile?.role === "admin"

@@ -157,7 +157,7 @@ export function EditListingForm({
           />
         </Field>
 
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <Field label="Şəhər">
             <select
               name="city_id"
@@ -201,7 +201,7 @@ export function EditListingForm({
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
           Qiymət və ölçülər
         </h2>
-        <div className="grid grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           <Field label="Qiymət (₼/ay)">
             <input name="price" type="number" required defaultValue={property.price} className="input" />
           </Field>
@@ -212,7 +212,7 @@ export function EditListingForm({
             <input name="area_m2" type="number" required defaultValue={property.area_m2} className="input" />
           </Field>
         </div>
-        <div className="grid grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           <Field label="Mərtəbə">
             <input name="floor" type="number" defaultValue={property.floor ?? ""} className="input" />
           </Field>
@@ -233,7 +233,7 @@ export function EditListingForm({
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
           Xüsusiyyətlər
         </h2>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <Checkbox name="is_renovated" label="Təmirli" defaultChecked={property.is_renovated} />
           <Checkbox name="is_furnished" label="Əşyalı" defaultChecked={property.is_furnished} />
           <Checkbox name="has_balcony" label="Balkonu var" defaultChecked={property.has_balcony} />

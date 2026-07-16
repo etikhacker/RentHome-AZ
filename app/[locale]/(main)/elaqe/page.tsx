@@ -13,9 +13,9 @@ export default async function ElaqePage({ params }: Props) {
   return (
     <>
       <SiteHeader />
-      <div className="max-w-[600px] mx-auto px-7 py-14">
-        <h1 className="font-display text-2xl font-medium mb-2">{t("title")}</h1>
-        <p className="text-sm text-ink-soft mb-8">
+      <div className="max-w-[600px] mx-auto px-4 sm:px-7 py-10 sm:py-14">
+        <h1 className="font-display text-xl sm:text-2xl font-medium mb-2">{t("title")}</h1>
+        <p className="text-sm text-ink-soft mb-7 sm:mb-8">
           {t("subtitle")}
         </p>
         <ContactForm />

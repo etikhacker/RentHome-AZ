@@ -32,8 +32,8 @@ export default async function AdminLayout({ children, params }: Props) {
     return (
       <>
         <SiteHeader />
-        <div className="max-w-[600px] mx-auto px-7 py-16 text-center">
-          <h1 className="font-display text-2xl font-medium mb-3">{tUsers("deniedTitle")}</h1>
+        <div className="max-w-[600px] mx-auto px-4 sm:px-7 py-12 sm:py-16 text-center">
+          <h1 className="font-display text-xl sm:text-2xl font-medium mb-3">{tUsers("deniedTitle")}</h1>
           <p className="text-sm text-ink-soft">{tUsers("deniedText")}</p>
         </div>
       </>
@@ -43,18 +43,18 @@ export default async function AdminLayout({ children, params }: Props) {
   return (
     <>
       <SiteHeader />
-      <div className="max-w-[1120px] mx-auto px-7 py-8">
-        <nav className="flex gap-6 border-b border-line mb-7 text-sm">
-          <Link href="/admin" className="pb-3 border-b-2 border-transparent hover:border-teal">
+      <div className="max-w-[1120px] mx-auto px-4 sm:px-7 py-6 sm:py-8">
+        <nav className="flex gap-4 sm:gap-6 border-b border-line mb-6 sm:mb-7 text-sm overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <Link href="/admin" className="pb-3 border-b-2 border-transparent hover:border-teal whitespace-nowrap">
             {t("nav.dashboard")}
           </Link>
-          <Link href="/admin/elanlar" className="pb-3 border-b-2 border-transparent hover:border-teal">
+          <Link href="/admin/elanlar" className="pb-3 border-b-2 border-transparent hover:border-teal whitespace-nowrap">
             {t("nav.listings")}
           </Link>
-          <Link href="/admin/istifadeciler" className="pb-3 border-b-2 border-transparent hover:border-teal">
+          <Link href="/admin/istifadeciler" className="pb-3 border-b-2 border-transparent hover:border-teal whitespace-nowrap">
             {t("nav.users")}
           </Link>
-          <Link href="/admin/elaqe" className="pb-3 border-b-2 border-transparent hover:border-teal">
+          <Link href="/admin/elaqe" className="pb-3 border-b-2 border-transparent hover:border-teal whitespace-nowrap">
             {t("nav.contact")}
           </Link>
         </nav>

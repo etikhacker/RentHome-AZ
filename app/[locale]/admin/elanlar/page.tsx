@@ -36,14 +36,14 @@ export default async function AdminElanlarPage({ searchParams, params }: Props) 
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-medium mb-5">{t("title")}</h1>
+      <h1 className="font-display text-xl sm:text-2xl font-medium mb-4 sm:mb-5">{t("title")}</h1>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-5 sm:mb-6 overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 pb-1">
         {tabs.map((tab) => (
           <Link
             key={tab.key}
             href={`/admin/elanlar?status=${tab.key}`}
-            className={`text-sm px-3.5 py-1.5 rounded-full border ${
+            className={`text-sm px-3.5 py-1.5 rounded-full border whitespace-nowrap shrink-0 ${
               activeTab === tab.key
                 ? "bg-teal text-white border-teal"
                 : "border-line text-ink-soft"

@@ -36,19 +36,19 @@ export function MyListingRow({
   const badge = statusLabels[status] ?? { text: status, className: "bg-line text-ink-soft" };
 
   return (
-    <div className="flex items-center justify-between border border-line rounded-lg px-4 py-3">
-      <div>
-        <Link href={`/elan/${id}`} className="text-sm font-medium hover:underline">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3 border border-line rounded-lg px-3.5 sm:px-4 py-3">
+      <div className="min-w-0">
+        <Link href={`/elan/${id}`} className="text-sm font-medium hover:underline break-words">
           {title}
         </Link>
-        <div className="flex items-center gap-2 mt-1">
+        <div className="flex items-center flex-wrap gap-2 mt-1">
           <span className="font-mono text-xs text-ink-soft">{price} ₼/ay</span>
           <span className={`text-[11px] px-2 py-0.5 rounded-full ${badge.className}`}>
             {badge.text}
           </span>
         </div>
       </div>
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
         <Link href={`/elan-yerlesdir/${id}`} className="text-xs text-teal-deep border-b border-teal-deep">
           Redaktə et
         </Link>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { MobileMenu } from "@/components/layout/mobile-menu";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionary";
 
@@ -31,60 +32,87 @@ export async function SiteHeader() {
     unreadNotifications = notifResult.count ?? 0;
   }
 
+  const navItems = [
+    { href: "/elanlar", label: t.search },
+    { href: "/elan-yerlesdir", label: t.post },
+    { href: "/haqqimizda", label: t.how },
+    { href: "/elaqe", label: t.contact },
+  ];
+
   return (
-    <header className="border-b border-line py-5">
-      <div className="max-w-[1120px] mx-auto px-7 flex items-center justify-between">
-        <Link href="/" className="font-display text-[22px] font-semibold tracking-tight">
+    <header className="border-b border-line py-4 sm:py-5 sticky top-0 bg-bg/95 backdrop-blur z-50">
+      <div className="max-w-[1120px] mx-auto px-4 sm:px-7 flex items-center justify-between gap-3">
+        <Link href="/" className="font-display text-[20px] sm:text-[22px] font-semibold tracking-tight shrink-0">
           Rent<span className="text-brick">Home</span> AZ
         </Link>
 
         <nav className="hidden md:flex items-center gap-7 text-sm text-ink-soft">
-          <Link href="/elanlar" className="hover:text-ink">{t.search}</Link>
-          <Link href="/elan-yerlesdir" className="hover:text-ink">{t.post}</Link>
-          <Link href="/haqqimizda" className="hover:text-ink">{t.how}</Link>
-          <Link href="/elaqe" className="hover:text-ink">{t.contact}</Link>
+          {navItems.map((item) => (
+            <Link key={item.href} href={item.href} className="hover:text-ink">
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
-        <div className="flex items-center gap-3.5">
-          <LanguageSwitcher current={locale} />
+        <div className="flex items-center gap-2 sm:gap-3.5">
+          <div className="hidden md:block">
+            <LanguageSwitcher current={locale} />
+          </div>
 
           {user ? (
             <>
-              <NotificationBell userId={user.id} initialUnreadCount={unreadNotifications} />
-              <Link href="/mesajlar" className="text-sm text-ink-soft hover:text-ink">
-                {t.messages}
-              </Link>
-              <Link href="/favorilerim" className="text-sm text-ink-soft hover:text-ink">
-                {t.favorites}
-              </Link>
-              <Link
-                href="/profil"
-                className="flex items-center gap-2 pl-1.5 pr-4 py-1.5 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep"
-              >
-                <span className="w-6 h-6 rounded-full bg-white/20 overflow-hidden flex items-center justify-center shrink-0">
-                  {avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-[10px]">{(fullName ?? "?")[0]?.toUpperCase()}</span>
-                  )}
-                </span>
-                {fullName ? fullName.split(" ")[0] : t.profile}
-              </Link>
+              <div className="hidden md:flex items-center gap-3.5">
+                <NotificationBell userId={user.id} initialUnreadCount={unreadNotifications} />
+                <Link href="/mesajlar" className="text-sm text-ink-soft hover:text-ink">
+                  {t.messages}
+                </Link>
+                <Link href="/favorilerim" className="text-sm text-ink-soft hover:text-ink">
+                  {t.favorites}
+                </Link>
+                <Link
+                  href="/profil"
+                  className="flex items-center gap-2 pl-1.5 pr-4 py-1.5 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep"
+                >
+                  <span className="w-6 h-6 rounded-full bg-white/20 overflow-hidden flex items-center justify-center shrink-0">
+                    {avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-[10px]">{(fullName ?? "?")[0]?.toUpperCase()}</span>
+                    )}
+                  </span>
+                  {fullName ? fullName.split(" ")[0] : t.profile}
+                </Link>
+              </div>
+              {/* mobil: yalnız zəng qutusu + menyu */}
+              <div className="md:hidden">
+                <NotificationBell userId={user.id} initialUnreadCount={unreadNotifications} />
+              </div>
             </>
           ) : (
             <>
-              <Link href="/giris" className="px-4 py-2 rounded-md text-sm font-medium border border-ink">
-                {t.login}
-              </Link>
-              <Link
-                href="/qeydiyyat"
-                className="px-4 py-2 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep"
-              >
-                {t.register}
-              </Link>
+              <div className="hidden md:flex items-center gap-3.5">
+                <Link href="/giris" className="px-4 py-2 rounded-md text-sm font-medium border border-ink">
+                  {t.login}
+                </Link>
+                <Link
+                  href="/qeydiyyat"
+                  className="px-4 py-2 rounded-md text-sm font-medium bg-teal text-white hover:bg-teal-deep"
+                >
+                  {t.register}
+                </Link>
+              </div>
             </>
           )}
+
+          <MobileMenu
+            locale={locale}
+            navItems={navItems}
+            isAuthed={!!user}
+            fullName={fullName}
+            avatarUrl={avatarUrl}
+            unreadNotifications={unreadNotifications}
+          />
         </div>
       </div>
     </header>

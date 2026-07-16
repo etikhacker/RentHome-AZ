@@ -10,7 +10,7 @@ export function PropertyFilters({
   return (
     <form
       method="get"
-      className="bg-paper border border-line rounded-2xl p-4.5 grid grid-cols-2 md:grid-cols-5 gap-3.5 items-end mb-8"
+      className="bg-paper border border-line rounded-2xl p-3.5 sm:p-4.5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-3.5 items-end mb-7 sm:mb-8"
     >
       <div>
         <label className="block text-xs text-ink-soft mb-1.5 font-medium">Şəhər</label>
@@ -79,7 +79,7 @@ export function PropertyFilters({
         </select>
       </div>
 
-      <div className="col-span-2 md:col-span-4 flex flex-wrap items-center gap-4 pt-1">
+      <div className="col-span-1 sm:col-span-2 md:col-span-5 flex flex-wrap items-center gap-x-5 gap-y-2.5 pt-1">
         <label className="flex items-center gap-2 text-sm text-ink-soft">
           <input
             type="checkbox"
@@ -108,18 +108,20 @@ export function PropertyFilters({
           Lift
         </label>
 
-        <button
-          type="submit"
-          className="ml-auto bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium"
-        >
-          Axtar
-        </button>
-        <a
-          href="/elanlar"
-          className="text-sm text-ink-soft border-b border-line"
-        >
-          Sıfırla
-        </a>
+        <div className="ml-auto flex items-center gap-3.5 w-full sm:w-auto">
+          <button
+            type="submit"
+            className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium flex-1 sm:flex-none"
+          >
+            Axtar
+          </button>
+          <a
+            href="/elanlar"
+            className="text-sm text-ink-soft border-b border-line"
+          >
+            Sıfırla
+          </a>
+        </div>
       </div>
     </form>
   );

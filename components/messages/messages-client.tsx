@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type RawMessage = {
@@ -145,13 +146,18 @@ export function MessagesClient({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 h-[520px]">
-      <div className="border border-line rounded-2xl overflow-y-auto bg-paper">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:h-[520px]">
+      {/* Söhbətlər siyahısı — mobil: yalnız söhbət seçilməyibsə görünür */}
+      <div
+        className={`border border-line rounded-2xl overflow-y-auto bg-paper md:block ${
+          active ? "hidden md:block" : "block"
+        }`}
+      >
         {conversations.map((c) => (
           <button
             key={c.key}
             onClick={() => setSelectedKey(c.key)}
-            className={`w-full text-left px-4 py-3 border-b border-line ${
+            className={`w-full text-left px-4 py-3 border-b border-line last:border-0 ${
               active?.key === c.key ? "bg-teal/10" : "hover:bg-white"
             }`}
           >
@@ -165,19 +171,34 @@ export function MessagesClient({
         ))}
       </div>
 
-      <div className="md:col-span-2 border border-line rounded-2xl bg-paper flex flex-col overflow-hidden">
+      {/* Aktiv söhbət — mobil: yalnız söhbət seçiləndə görünür */}
+      <div
+        className={`md:col-span-2 border border-line rounded-2xl bg-paper flex flex-col overflow-hidden md:flex ${
+          active ? "flex" : "hidden md:flex"
+        }`}
+      >
         {active && (
           <>
-            <div className="px-4 py-3 border-b border-line">
-              <div className="text-sm font-medium">{active.otherName}</div>
-              <div className="text-xs text-ink-soft">{active.propertyTitle}</div>
+            <div className="px-3 sm:px-4 py-3 border-b border-line flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedKey(null)}
+                className="md:hidden p-1 -ml-1 text-ink-soft hover:text-ink"
+                aria-label="Söhbətlərə qayıt"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <div className="min-w-0">
+                <div className="text-sm font-medium truncate">{active.otherName}</div>
+                <div className="text-xs text-ink-soft truncate">{active.propertyTitle}</div>
+              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5">
+            <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-3 space-y-2.5 min-h-[300px] md:min-h-0">
               {thread.map((m) => (
                 <div
                   key={m.id}
-                  className={`max-w-[75%] px-3 py-2 rounded-lg text-sm ${
+                  className={`max-w-[80%] px-3 py-2 rounded-lg text-sm break-words ${
                     m.sender_id === currentUserId
                       ? "ml-auto bg-teal text-white"
                       : "bg-white border border-line"
@@ -188,18 +209,18 @@ export function MessagesClient({
               ))}
             </div>
 
-            <div className="p-3 border-t border-line flex gap-2">
+            <div className="p-2.5 sm:p-3 border-t border-line flex gap-2">
               <input
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 placeholder={t("inputPlaceholder")}
-                className="flex-1 border border-line rounded-lg px-3 py-2 text-sm bg-white"
+                className="flex-1 min-w-0 border border-line rounded-lg px-3 py-2 text-sm bg-white"
               />
               <button
                 onClick={handleSend}
                 disabled={sending}
-                className="bg-teal hover:bg-teal-deep text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60"
+                className="bg-teal hover:bg-teal-deep text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60 shrink-0"
               >
                 {t("send")}
               </button>

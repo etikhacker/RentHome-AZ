@@ -23,8 +23,8 @@ export default async function DuzenlemeSayfasi({ params }: { params: { id: strin
     return (
       <>
         <SiteHeader />
-        <div className="max-w-[600px] mx-auto px-7 py-16 text-center">
-          <h1 className="font-display text-2xl font-medium mb-3">Bu sənin elanın deyil</h1>
+        <div className="max-w-[600px] mx-auto px-4 sm:px-7 py-12 sm:py-16 text-center">
+          <h1 className="font-display text-xl sm:text-2xl font-medium mb-3">Bu sənin elanın deyil</h1>
           <p className="text-sm text-ink-soft">Yalnız öz elanlarını redaktə edə bilərsən.</p>
         </div>
       </>
@@ -43,9 +43,9 @@ export default async function DuzenlemeSayfasi({ params }: { params: { id: strin
   return (
     <>
       <SiteHeader />
-      <div className="max-w-[720px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-1">Elanı redaktə et</h1>
-        <p className="text-sm text-ink-soft mb-7">
+      <div className="max-w-[720px] mx-auto px-4 sm:px-7 py-7 sm:py-10">
+        <h1 className="font-display text-xl sm:text-2xl font-medium mb-1">Elanı redaktə et</h1>
+        <p className="text-sm text-ink-soft mb-6 sm:mb-7">
           Dəyişiklik etdikdən sonra elan yenidən admin təsdiqini gözləməyəcək.
         </p>
         <EditListingForm

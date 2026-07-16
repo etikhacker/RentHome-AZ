@@ -62,10 +62,10 @@ export function ListingReviewRow({
   const badgeClass = statusClasses[status] ?? "bg-line text-ink-soft";
 
   return (
-    <div className="flex items-center justify-between border border-line rounded-lg px-4 py-3 gap-4">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 border border-line rounded-lg px-3.5 sm:px-4 py-3">
       <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <Link href={`/elan/${id}`} className="text-sm font-medium hover:underline truncate">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link href={`/elan/${id}`} className="text-sm font-medium hover:underline break-words">
             {title}
           </Link>
           <span className={`text-[11px] px-2 py-0.5 rounded-full shrink-0 ${badgeClass}`}>
@@ -82,7 +82,7 @@ export function ListingReviewRow({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-2 shrink-0 flex-wrap">
         {status !== "tesdiqlendi" && (
           <button
             onClick={() => setStatus("tesdiqlendi")}

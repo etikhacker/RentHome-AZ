@@ -32,8 +32,8 @@ export default async function FavorilerimPage() {
   return (
     <>
       <SiteHeader />
-      <div className="max-w-[1120px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-6">Favorilərim</h1>
+      <div className="max-w-[1120px] mx-auto px-4 sm:px-7 py-7 sm:py-10">
+        <h1 className="font-display text-xl sm:text-2xl font-medium mb-5 sm:mb-6">Favorilərim</h1>
 
         {properties.length === 0 ? (
           <p className="text-sm text-ink-soft">

@@ -53,8 +53,8 @@ export default async function MesajlarPage({ params }: Props) {
   return (
     <>
       <SiteHeader />
-      <div className="max-w-[1120px] mx-auto px-7 py-10">
-        <h1 className="font-display text-2xl font-medium mb-6">{t("title")}</h1>
+      <div className="max-w-[1120px] mx-auto px-4 sm:px-7 py-6 sm:py-10">
+        <h1 className="font-display text-xl sm:text-2xl font-medium mb-5 sm:mb-6">{t("title")}</h1>
         <MessagesClient
           currentUserId={user.id}
           initialMessages={messages ?? []}

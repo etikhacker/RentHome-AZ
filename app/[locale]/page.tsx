@@ -69,16 +69,16 @@ export default async function HomePage() {
     <>
       <SiteHeader />
 
-      <section className="pt-16 pb-10">
-        <div className="max-w-[1120px] mx-auto px-7">
-          <h1 className="font-display font-medium text-[46px] leading-[1.12] tracking-tight max-w-xl">
+      <section className="pt-10 sm:pt-16 pb-8 sm:pb-10">
+        <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
+          <h1 className="font-display font-medium text-[32px] sm:text-[40px] md:text-[46px] leading-[1.1] sm:leading-[1.12] tracking-tight max-w-xl">
             {t.heroTitle1}
             <br />
             {t.heroTitle2} <em className="italic text-brick not-italic font-medium">{t.heroTitle3}</em>
           </h1>
-          <p className="mt-3.5 text-[16.5px] text-ink-soft max-w-md">{t.heroSubtitle}</p>
+          <p className="mt-3.5 text-[15px] sm:text-[16.5px] text-ink-soft max-w-md">{t.heroSubtitle}</p>
 
-          <form action="/elanlar" className="mt-8 bg-paper border border-line rounded-2xl p-4.5 grid grid-cols-1 md:grid-cols-6 gap-3.5 items-end">
+          <form action="/elanlar" className="mt-7 sm:mt-8 bg-paper border border-line rounded-2xl p-3.5 sm:p-4.5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-3.5 items-end">
             <div>
               <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.city}</label>
               <select name="city" className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
@@ -125,18 +125,18 @@ export default async function HomePage() {
                 <option value="ofis">Ofis</option>
               </select>
             </div>
-            <button className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium">
+            <button className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium sm:col-span-2 md:col-span-1">
               {t.search_btn}
             </button>
           </form>
         </div>
       </section>
 
-      <section className="pt-12">
-        <div className="max-w-[1120px] mx-auto px-7">
-          <div className="flex items-baseline justify-between mb-5">
-            <h2 className="font-display text-2xl font-medium">{t.newest}</h2>
-            <a href="/elanlar" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
+      <section className="pt-10 sm:pt-12">
+        <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
+          <div className="flex items-baseline justify-between mb-5 gap-3">
+            <h2 className="font-display text-xl sm:text-2xl font-medium">{t.newest}</h2>
+            <a href="/elanlar" className="text-[13.5px] text-teal-deep border-b border-teal-deep whitespace-nowrap">
               {t.seeAll}
             </a>
           </div>
@@ -160,11 +160,11 @@ export default async function HomePage() {
       </section>
 
       {premium && premium.length > 0 && (
-        <section className="pt-14 pb-16">
-          <div className="max-w-[1120px] mx-auto px-7">
-            <div className="flex items-baseline justify-between mb-5">
-              <h2 className="font-display text-2xl font-medium">{t.premium}</h2>
-              <a href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep">
+        <section className="pt-12 sm:pt-14 pb-14 sm:pb-16">
+          <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
+            <div className="flex items-baseline justify-between mb-5 gap-3">
+              <h2 className="font-display text-xl sm:text-2xl font-medium">{t.premium}</h2>
+              <a href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep whitespace-nowrap">
                 {t.seeAll}
               </a>
             </div>
@@ -183,8 +183,8 @@ export default async function HomePage() {
         </section>
       )}
 
-      <footer className="border-t border-line py-7 text-[13px] text-ink-soft">
-        <div className="max-w-[1120px] mx-auto px-7 flex justify-between">
+      <footer className="border-t border-line py-6 sm:py-7 text-[13px] text-ink-soft">
+        <div className="max-w-[1120px] mx-auto px-4 sm:px-7 flex flex-col sm:flex-row gap-1.5 sm:justify-between">
           <span>© 2026 RentHome AZ</span>
           <span>Mingəçevir, Azərbaycan</span>
         </div>
