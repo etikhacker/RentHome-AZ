@@ -54,9 +54,13 @@ export function NotificationBell({
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
+  const channelName = useRef(
+    `notifications-realtime-${userId}-${Math.random().toString(36).slice(2)}`
+  ).current;
+
   useEffect(() => {
     const channel = supabase
-      .channel("notifications-realtime")
+      .channel(channelName)
       .on(
         "postgres_changes",
         {
