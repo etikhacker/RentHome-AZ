@@ -9,6 +9,7 @@ export function ContactMessageRow({
   id,
   name,
   email,
+  phone,
   message,
   isRead,
   createdAt,
@@ -16,6 +17,7 @@ export function ContactMessageRow({
   id: string;
   name: string;
   email: string;
+  phone: string | null;
   message: string;
   isRead: boolean;
   createdAt: string;
@@ -52,6 +54,11 @@ export function ContactMessageRow({
           <a href={`mailto:${email}`} className="text-xs text-teal-deep hover:underline break-all">
             {email}
           </a>
+          {phone && (
+            <a href={`tel:${phone}`} className="block text-xs text-teal-deep hover:underline">
+              {phone}
+            </a>
+          )}
         </div>
         <p className="text-xs text-ink-soft whitespace-nowrap shrink-0">
           {new Date(createdAt).toLocaleString()}

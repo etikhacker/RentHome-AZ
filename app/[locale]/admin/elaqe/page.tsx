@@ -13,7 +13,7 @@ export default async function AdminElaqePage({ params }: Props) {
 
   const { data: messages } = await supabase
     .from("contact_messages")
-    .select("id, name, email, message, is_read, created_at")
+    .select("id, name, email, phone, message, is_read, created_at")
     .order("created_at", { ascending: false });
 
   const unreadCount = messages?.filter((m) => !m.is_read).length ?? 0;
@@ -36,6 +36,7 @@ export default async function AdminElaqePage({ params }: Props) {
             id={m.id}
             name={m.name}
             email={m.email}
+            phone={m.phone}
             message={m.message}
             isRead={m.is_read}
             createdAt={m.created_at}

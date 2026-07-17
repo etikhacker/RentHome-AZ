@@ -230,7 +230,11 @@
     "send": "Send",
     "sending": "Sending...",
     "error": "Failed to send, please try again.",
-    "success": "We've received your message. We'll be in touch soon."
+    "success": "We've received your message. We'll be in touch soon.",
+    "phone": "Phone",
+    "loginRequiredTitle": "This section is for logged-in users only",
+    "loginRequiredText": "Please log in or sign up first to use the contact form.",
+    "loginCta": "Log in"
   },
   "admin": {
     "nav": {

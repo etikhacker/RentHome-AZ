@@ -9,6 +9,7 @@ export function ContactForm() {
   const supabase = createClient();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -19,7 +20,7 @@ export function ContactForm() {
     setSending(true);
     setError(null);
 
-    const { error } = await supabase.from("contact_messages").insert({ name, email, message });
+    const { error } = await supabase.from("contact_messages").insert({ name, email, phone, message });
 
     setSending(false);
     if (error) {
@@ -55,6 +56,17 @@ export function ContactForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
+        />
+      </div>
+      <div>
+        <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t("phone")}</label>
+        <input
+          type="tel"
+          required
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="+994 50 123 45 67"
           className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm"
         />
       </div>

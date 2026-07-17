@@ -230,7 +230,11 @@
     "send": "Göndər",
     "sending": "Göndərilir...",
     "error": "Göndərilmədi, yenidən cəhd et.",
-    "success": "Mesajın bizə çatdı. Tezliklə sənə geri dönəcəyik."
+    "success": "Mesajın bizə çatdı. Tezliklə sənə geri dönəcəyik.",
+    "phone": "Telefon",
+    "loginRequiredTitle": "Bu bölmə yalnız giriş etmiş istifadəçilər üçündür",
+    "loginRequiredText": "Bizimlə əlaqə formundan istifadə etmək üçün əvvəlcə giriş et və ya qeydiyyatdan keç.",
+    "loginCta": "Giriş et"
   },
   "admin": {
     "nav": {
