@@ -237,7 +237,8 @@
       "dashboard": "Dashboard",
       "listings": "Elanlar",
       "users": "İstifadəçilər",
-      "contact": "Mesajlar"
+      "contact": "Mesajlar",
+      "newListing": "Yeni elan"
     },
     "dashboard": {
       "title": "Dashboard",

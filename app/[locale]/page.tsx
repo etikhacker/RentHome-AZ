@@ -183,6 +183,25 @@ export default async function HomePage() {
         </section>
       )}
 
+      <section className="py-10 sm:py-14 bg-paper border-t border-line">
+        <div className="max-w-[1120px] mx-auto px-4 sm:px-7 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div>
+            <h2 className="font-display text-xl sm:text-2xl font-medium mb-1">
+              Evini kirayə vermək istəyirsən?
+            </h2>
+            <p className="text-sm text-ink-soft">
+              Bizimlə əlaqə saxla, elanını komandamız saytda yerləşdirsin.
+            </p>
+          </div>
+          <a
+            href="/elaqe"
+            className="shrink-0 bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-2.5 text-sm font-medium"
+          >
+            Bizimlə əlaqə
+          </a>
+        </div>
+      </section>
+
       <footer className="border-t border-line py-6 sm:py-7 text-[13px] text-ink-soft">
         <div className="max-w-[1120px] mx-auto px-4 sm:px-7 flex flex-col sm:flex-row gap-1.5 sm:justify-between">
           <span>© 2026 RentHome AZ</span>

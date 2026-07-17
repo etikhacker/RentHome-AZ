@@ -34,7 +34,6 @@ export async function SiteHeader() {
 
   const navItems = [
     { href: "/elanlar", label: t.search },
-    { href: "/elan-yerlesdir", label: t.post },
     { href: "/haqqimizda", label: t.how },
     { href: "/elaqe", label: t.contact },
   ];

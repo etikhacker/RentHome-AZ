@@ -20,7 +20,7 @@ export const dictionary = {
       heroTitle2: "Evini",
       heroTitle3: "tap.",
       heroSubtitle:
-        "Bakı, Gəncə, Sumqayıt və digər şəhərlərdə minlərlə yoxlanılmış icarə elanı — vasitəçisiz, birbaşa ev sahibi ilə əlaqə.",
+        "Bakı, Gəncə, Sumqayıt və digər şəhərlərdə minlərlə yoxlanılmış icarə elanı — hər biri komandamız tərəfindən təsdiqlənib, sən sadəcə bəyən və əlaqə saxla.",
       city: "Şəhər",
       allCities: "Bütün şəhərlər",
       priceRange: "Qiymət aralığı (₼)",
@@ -52,7 +52,7 @@ export const dictionary = {
       heroTitle2: "Find your",
       heroTitle3: "home.",
       heroSubtitle:
-        "Thousands of verified rental listings across Baku, Ganja, Sumgait and more — connect directly with the landlord, no middlemen.",
+        "Thousands of verified rental listings across Baku, Ganja, Sumgait and more — every listing checked by our team, so you can just browse and reach out.",
       city: "City",
       allCities: "All cities",
       priceRange: "Price range (₼)",
@@ -84,7 +84,7 @@ export const dictionary = {
       heroTitle2: "Найди",
       heroTitle3: "жильё.",
       heroSubtitle:
-        "Тысячи проверенных объявлений об аренде в Баку, Гяндже, Сумгаите и других городах — напрямую с хозяином, без посредников.",
+        "Тысячи проверенных объявлений об аренде в Баку, Гяндже, Сумгаите и других городах — каждое объявление проверено нашей командой, тебе остаётся только выбрать и связаться.",
       city: "Город",
       allCities: "Все города",
       priceRange: "Диапазон цен (₼)",

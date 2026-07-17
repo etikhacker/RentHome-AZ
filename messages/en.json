@@ -237,7 +237,8 @@
       "dashboard": "Dashboard",
       "listings": "Listings",
       "users": "Users",
-      "contact": "Messages"
+      "contact": "Messages",
+      "newListing": "New listing"
     },
     "dashboard": {
       "title": "Dashboard",
