@@ -44,13 +44,19 @@ export function EditListingForm({
   }
 
   function handleNewFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
-    if (images.length + files.length > 8) {
+    const selected = Array.from(e.target.files ?? []);
+    const combined = [...newFiles, ...selected];
+    if (images.length + combined.length > 8) {
       setError("Cəmi maksimum 8 şəkil ola bilər.");
       return;
     }
     setError(null);
-    setNewFiles(files);
+    setNewFiles(combined);
+    e.target.value = "";
+  }
+
+  function removeNewFile(index: number) {
+    setNewFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
   async function handleDeleteImage(imageId: string) {
@@ -83,7 +89,6 @@ export function EditListingForm({
       has_balcony: form.get("has_balcony") === "1",
       has_elevator: form.get("has_elevator") === "1",
       utilities_included: form.get("utilities_included") === "1",
-      status: "gozleyir" as const, // dəyişiklikdən sonra yenidən yoxlanılsın
     };
 
     if (!payload.title || !payload.city_id || !payload.price || !payload.address) {
@@ -291,6 +296,27 @@ export function EditListingForm({
         </label>
         {newFiles.length > 0 && (
           <p className="text-xs text-ink-soft">{newFiles.length} yeni şəkil seçildi.</p>
+        )}
+        {newFiles.length > 0 && (
+          <div className="grid grid-cols-4 gap-2 mt-2">
+            {newFiles.map((file, i) => (
+              <div key={i} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt=""
+                  className="w-full h-20 object-cover rounded-md"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeNewFile(i)}
+                  className="absolute top-1 right-1 bg-brick text-white text-xs w-5 h-5 rounded-full"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </section>
 

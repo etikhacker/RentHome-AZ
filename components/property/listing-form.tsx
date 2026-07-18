@@ -35,13 +35,19 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
   }
 
   function handleImagesChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
-    if (files.length > 8) {
+    const newFiles = Array.from(e.target.files ?? []);
+    const combined = [...images, ...newFiles];
+    if (combined.length > 8) {
       setError(t("maxImagesError"));
       return;
     }
     setError(null);
-    setImages(files);
+    setImages(combined);
+    e.target.value = ""; // eyni faylı təkrar seçmək mümkün olsun deyə
+  }
+
+  function removeImage(index: number) {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -238,6 +244,29 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">
           {t("sectionImages")}
         </h2>
+
+        {images.length > 0 && (
+          <div className="grid grid-cols-4 gap-2 mb-2">
+            {images.map((file, i) => (
+              <div key={i} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt=""
+                  className="w-full h-20 object-cover rounded-md"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeImage(i)}
+                  className="absolute top-1 right-1 bg-brick text-white text-xs w-5 h-5 rounded-full"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <input type="file" accept="image/*" multiple onChange={handleImagesChange} className="text-sm" />
         {images.length > 0 && (
           <p className="text-xs text-ink-soft">{t("imagesSelected", { count: images.length })}</p>
