@@ -101,7 +101,8 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
       setUploadProgress(t("uploadingProgress", { current: 0, total: images.length }));
       for (let i = 0; i < images.length; i++) {
         const file = images[i];
-        const path = `${property.id}/${i}-${file.name}`;
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `${property.id}/${i}-${safeName}`;
 
         const { error: uploadError } = await supabase.storage
           .from("property-images")

@@ -114,7 +114,8 @@ export function EditListingForm({
       const startOrder = images.length;
       for (let i = 0; i < newFiles.length; i++) {
         const file = newFiles[i];
-        const path = `${property.id}/${Date.now()}-${i}-${file.name}`;
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `${property.id}/${Date.now()}-${i}-${safeName}`;
 
         const { error: uploadError } = await supabase.storage
           .from("property-images")

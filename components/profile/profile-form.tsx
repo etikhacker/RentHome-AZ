@@ -35,7 +35,8 @@ export function ProfileForm({
     if (!file) return;
 
     setUploading(true);
-    const path = `avatars/${userId}/${Date.now()}-${file.name}`;
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const path = `avatars/${userId}/${Date.now()}-${safeName}`;
     const { error } = await supabase.storage.from("property-images").upload(path, file);
 
     if (!error) {
