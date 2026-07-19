@@ -14,7 +14,7 @@ export default async function DuzenlemeSayfasi({ params }: { params: { id: strin
 
   const { data: property } = await supabase
     .from("properties")
-    .select("*, property_images ( id, url, sort_order )")
+    .select("*, property_images ( id, url, sort_order, media_type )")
     .eq("id", params.id)
     .single();
 

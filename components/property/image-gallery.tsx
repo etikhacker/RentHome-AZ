@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export function ImageGallery({ images }: { images: { url: string }[] }) {
+export function ImageGallery({
+  images,
+}: {
+  images: { url: string; media_type?: string }[];
+}) {
   const tCommon = useTranslations("common");
   const [active, setActive] = useState(0);
 
@@ -26,12 +30,20 @@ export function ImageGallery({ images }: { images: { url: string }[] }) {
   return (
     <div>
       <div className="relative">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={images[active].url}
-          alt=""
-          className="w-full h-[220px] sm:h-[360px] object-cover rounded-xl"
-        />
+        {images[active].media_type === "video" ? (
+          <video
+            src={images[active].url}
+            controls
+            className="w-full h-[220px] sm:h-[360px] object-cover rounded-xl bg-black"
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={images[active].url}
+            alt=""
+            className="w-full h-[220px] sm:h-[360px] object-cover rounded-xl"
+          />
+        )}
         {images.length > 1 && (
           <>
             <button
@@ -59,16 +71,34 @@ export function ImageGallery({ images }: { images: { url: string }[] }) {
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto mt-3 pb-1">
           {images.map((img, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={i}
-              src={img.url}
-              alt=""
-              onClick={() => setActive(i)}
-              className={`w-16 h-14 sm:w-20 sm:h-16 object-cover rounded-md cursor-pointer border-2 shrink-0 ${
-                i === active ? "border-teal" : "border-transparent"
-              }`}
-            />
+            <div key={i} className="relative shrink-0">
+              {img.media_type === "video" ? (
+                <video
+                  src={img.url}
+                  onClick={() => setActive(i)}
+                  className={`w-16 h-14 sm:w-20 sm:h-16 object-cover rounded-md cursor-pointer border-2 ${
+                    i === active ? "border-teal" : "border-transparent"
+                  }`}
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={img.url}
+                  alt=""
+                  onClick={() => setActive(i)}
+                  className={`w-16 h-14 sm:w-20 sm:h-16 object-cover rounded-md cursor-pointer border-2 ${
+                    i === active ? "border-teal" : "border-transparent"
+                  }`}
+                />
+              )}
+              {img.media_type === "video" && (
+                <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="w-5 h-5 rounded-full bg-black/50 flex items-center justify-center text-white text-[10px]">
+                    ▶
+                  </span>
+                </span>
+              )}
+            </div>
           ))}
         </div>
       )}

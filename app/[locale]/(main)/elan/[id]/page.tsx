@@ -21,7 +21,7 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
       .from("properties")
       .select(
         `*, cities ( name ), districts ( name ),
-         property_images ( url, sort_order ),
+         property_images ( url, sort_order, media_type ),
          profiles ( id, full_name, avatar_url, phone )`
       )
       .eq("id", params.id)
@@ -39,7 +39,7 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
     .select(
       `id, title, price, floor, total_floors, is_premium, is_renovated,
        is_furnished, has_elevator, has_balcony, utilities_included,
-       cities ( name ), districts ( name ), property_images ( url, sort_order )`
+       cities ( name ), districts ( name ), property_images ( url, sort_order, media_type )`
     )
     .eq("city_id", property.city_id)
     .eq("status", "tesdiqlendi")
@@ -177,6 +177,7 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
                       cityName: (p.cities as any)?.name,
                       districtName: (p.districts as any)?.name,
                       thumbnailUrl: sorted[0]?.url ?? null,
+                    thumbnailType: sorted[0]?.media_type ?? null,
                     }}
                   />
                 );

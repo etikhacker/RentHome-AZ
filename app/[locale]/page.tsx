@@ -7,7 +7,7 @@ import { getDictionary } from "@/lib/i18n/dictionary";
 const cardFields =
   `id, title, price, floor, total_floors, is_premium, is_renovated,
    is_furnished, has_elevator, has_balcony, utilities_included,
-   cities ( name ), districts ( name ), property_images ( url, sort_order )`;
+   cities ( name ), districts ( name ), property_images ( url, sort_order, media_type )`;
 
 function toCardProps(p: any) {
   const sorted = [...(p.property_images ?? [])].sort(
@@ -28,6 +28,7 @@ function toCardProps(p: any) {
     cityName: p.cities?.name,
     districtName: p.districts?.name,
     thumbnailUrl: sorted[0]?.url ?? null,
+    thumbnailType: sorted[0]?.media_type ?? null,
   };
 }
 

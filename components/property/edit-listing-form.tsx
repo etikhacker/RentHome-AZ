@@ -7,7 +7,7 @@ import type { PropertyType } from "@/lib/types";
 
 type City = { id: string; name: string };
 type District = { id: string; name: string };
-type ExistingImage = { id: string; url: string; sort_order: number };
+type ExistingImage = { id: string; url: string; sort_order: number; media_type?: string };
 
 export function EditListingForm({
   property,
@@ -130,9 +130,16 @@ export function EditListingForm({
           .from("property-images")
           .getPublicUrl(path);
 
+        const mediaType = file.type.startsWith("video/") ? "video" : "image";
+
         await supabase
           .from("property_images")
-          .insert({ property_id: property.id, url: publicUrl.publicUrl, sort_order: startOrder + i });
+          .insert({
+            property_id: property.id,
+            url: publicUrl.publicUrl,
+            sort_order: startOrder + i,
+            media_type: mediaType,
+          });
 
         setUploadProgress(`Şəkillər yüklənir (${i + 1}/${newFiles.length})`);
       }
@@ -265,14 +272,18 @@ export function EditListingForm({
       </section>
 
       <section className="space-y-2.5">
-        <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">Şəkillər</h2>
+        <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">Şəkil/Video</h2>
 
         {images.length > 0 && (
           <div className="grid grid-cols-4 gap-2 mb-3">
             {images.map((img) => (
               <div key={img.id} className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img.url} alt="" className="w-full h-20 object-cover rounded-md" />
+                {img.media_type === "video" ? (
+                  <video src={img.url} className="w-full h-20 object-cover rounded-md bg-black" />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={img.url} alt="" className="w-full h-20 object-cover rounded-md" />
+                )}
                 <button
                   type="button"
                   onClick={() => handleDeleteImage(img.id)}
@@ -286,10 +297,10 @@ export function EditListingForm({
         )}
 
         <label className="text-sm text-teal-deep cursor-pointer">
-          + Yeni şəkil əlavə et (maks. cəmi 8)
+          + Yeni şəkil/video əlavə et (maks. cəmi 8)
           <input
             type="file"
-            accept="image/*"
+            accept="image/*,video/*"
             multiple
             onChange={handleNewFilesChange}
             className="hidden"
@@ -302,12 +313,19 @@ export function EditListingForm({
           <div className="grid grid-cols-4 gap-2 mt-2">
             {newFiles.map((file, i) => (
               <div key={i} className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt=""
-                  className="w-full h-20 object-cover rounded-md"
-                />
+                {file.type.startsWith("video/") ? (
+                  <video
+                    src={URL.createObjectURL(file)}
+                    className="w-full h-20 object-cover rounded-md bg-black"
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt=""
+                    className="w-full h-20 object-cover rounded-md"
+                  />
+                )}
                 <button
                   type="button"
                   onClick={() => removeNewFile(i)}

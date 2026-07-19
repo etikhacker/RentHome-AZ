@@ -34,7 +34,7 @@ export default async function ElanlarPage({
        is_furnished, has_elevator, has_balcony, utilities_included,
        cities ( name ),
        districts ( name ),
-       property_images ( url, sort_order )`
+       property_images ( url, sort_order, media_type )`
     )
     .eq("status", "tesdiqlendi")
     .order("created_at", { ascending: false });
@@ -114,6 +114,7 @@ export default async function ElanlarPage({
                     cityName: (p.cities as any)?.name,
                     districtName: (p.districts as any)?.name,
                     thumbnailUrl: sortedImages[0]?.url ?? null,
+                    thumbnailType: sortedImages[0]?.media_type ?? null,
                   }}
                 />
               );

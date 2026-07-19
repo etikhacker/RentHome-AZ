@@ -17,6 +17,7 @@ type Props = {
     cityName?: string;
     districtName?: string;
     thumbnailUrl?: string | null;
+    thumbnailType?: string | null;
   };
   tilt?: "left" | "right";
   currentUserId?: string | null;
@@ -53,8 +54,12 @@ export function PropertyCard({ property, tilt = "left", currentUserId, favorited
       <Link href={`/elan/${property.id}`} className="block">
         <div className="h-[150px] rounded mb-3 bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] flex items-center justify-center text-xs text-ink-soft overflow-hidden">
           {property.thumbnailUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={property.thumbnailUrl} alt={property.title} className="w-full h-full object-cover" />
+            property.thumbnailType === "video" ? (
+              <video src={property.thumbnailUrl} className="w-full h-full object-cover" />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={property.thumbnailUrl} alt={property.title} className="w-full h-full object-cover" />
+            )
           ) : (
             "şəkil"
           )}

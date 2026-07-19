@@ -117,9 +117,16 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
           .from("property-images")
           .getPublicUrl(path);
 
+        const mediaType = file.type.startsWith("video/") ? "video" : "image";
+
         await supabase
           .from("property_images")
-          .insert({ property_id: property.id, url: publicUrl.publicUrl, sort_order: i });
+          .insert({
+            property_id: property.id,
+            url: publicUrl.publicUrl,
+            sort_order: i,
+            media_type: mediaType,
+          });
 
         setUploadProgress(t("uploadingProgress", { current: i + 1, total: images.length }));
       }
@@ -250,12 +257,19 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
           <div className="grid grid-cols-4 gap-2 mb-2">
             {images.map((file, i) => (
               <div key={i} className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt=""
-                  className="w-full h-20 object-cover rounded-md"
-                />
+                {file.type.startsWith("video/") ? (
+                  <video
+                    src={URL.createObjectURL(file)}
+                    className="w-full h-20 object-cover rounded-md bg-black"
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt=""
+                    className="w-full h-20 object-cover rounded-md"
+                  />
+                )}
                 <button
                   type="button"
                   onClick={() => removeImage(i)}
@@ -268,7 +282,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
           </div>
         )}
 
-        <input type="file" accept="image/*" multiple onChange={handleImagesChange} className="text-sm" />
+        <input type="file" accept="image/*,video/*" multiple onChange={handleImagesChange} className="text-sm" />
         {images.length > 0 && (
           <p className="text-xs text-ink-soft">{t("imagesSelected", { count: images.length })}</p>
         )}

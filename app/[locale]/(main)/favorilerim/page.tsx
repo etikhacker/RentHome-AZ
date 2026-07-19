@@ -19,7 +19,7 @@ export default async function FavorilerimPage() {
        properties (
          id, title, price, floor, total_floors, is_premium, is_renovated,
          is_furnished, has_elevator, has_balcony, utilities_included, status,
-         cities ( name ), districts ( name ), property_images ( url, sort_order )
+         cities ( name ), districts ( name ), property_images ( url, sort_order, media_type )
        )`
     )
     .eq("user_id", user.id)
@@ -67,6 +67,7 @@ export default async function FavorilerimPage() {
                     cityName: p.cities?.name,
                     districtName: p.districts?.name,
                     thumbnailUrl: sorted[0]?.url ?? null,
+                    thumbnailType: sorted[0]?.media_type ?? null,
                   }}
                 />
               );
