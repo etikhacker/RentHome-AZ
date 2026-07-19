@@ -117,7 +117,7 @@ export function NotificationBell({
 
   return (
     <>
-      <div className="fixed top-4 right-4 z-[100] space-y-2 w-80 max-w-[90vw]">
+      <div className="fixed top-4 left-3 right-3 z-[100] space-y-2 w-auto sm:left-auto sm:right-4 sm:w-80">
         {toasts.map((n) => {
           const inner = (
             <div className="bg-paper border border-line rounded-xl shadow-lg p-3.5 flex gap-2.5 items-start animate-in">
@@ -159,7 +159,7 @@ export function NotificationBell({
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 max-h-96 overflow-y-auto bg-paper border border-line rounded-xl shadow-lg z-50">
+        <div className="absolute right-0 mt-2 w-[min(92vw,20rem)] max-h-96 overflow-y-auto bg-paper border border-line rounded-xl shadow-lg z-50 sm:w-80">
           {items === null ? (
             <p className="text-sm text-ink-soft p-4">Yüklənir...</p>
           ) : items.length === 0 ? (

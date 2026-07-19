@@ -48,7 +48,7 @@ export function ContactMessageRow({
         isRead ? "bg-white" : "bg-teal/5 border-teal/30"
       }`}
     >
-      <div className="flex items-start justify-between gap-3 sm:gap-4 mb-2 flex-wrap sm:flex-nowrap">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-2">
         <div className="min-w-0">
           <p className="text-sm font-medium break-words">{name}</p>
           <a href={`mailto:${email}`} className="text-xs text-teal-deep hover:underline break-all">
@@ -60,25 +60,25 @@ export function ContactMessageRow({
             </a>
           )}
         </div>
-        <p className="text-xs text-ink-soft whitespace-nowrap shrink-0">
+        <p className="text-xs text-ink-soft sm:whitespace-nowrap shrink-0">
           {new Date(createdAt).toLocaleString()}
         </p>
       </div>
 
       <p className="text-sm text-ink-soft whitespace-pre-wrap mb-3 break-words">{message}</p>
 
-      <div className="flex gap-3 text-xs">
+      <div className="flex flex-col sm:flex-row gap-3 text-xs">
         <button
           onClick={toggleRead}
           disabled={busy}
-          className="text-teal-deep hover:underline disabled:opacity-50"
+          className="text-left text-teal-deep hover:underline disabled:opacity-50"
         >
           {isRead ? t("markUnread") : t("markRead")}
         </button>
         <button
           onClick={handleDelete}
           disabled={busy}
-          className="text-brick hover:underline disabled:opacity-50"
+          className="text-left text-brick hover:underline disabled:opacity-50"
         >
           {t("delete")}
         </button>

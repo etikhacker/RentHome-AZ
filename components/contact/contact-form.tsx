@@ -84,7 +84,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={sending}
-        className="bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-60"
+        className="w-full sm:w-auto bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-60"
       >
         {sending ? t("sending") : t("send")}
       </button>

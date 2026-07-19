@@ -261,7 +261,7 @@ export function EditListingForm({
 
       <section className="space-y-3.5">
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">Əlaqə</h2>
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <Field label="Telefon nömrəsi">
             <input name="phone" required defaultValue={property.phone} className="input" />
           </Field>
@@ -275,7 +275,7 @@ export function EditListingForm({
         <h2 className="text-sm font-semibold text-ink-soft uppercase tracking-wide">Şəkil/Video</h2>
 
         {images.length > 0 && (
-          <div className="grid grid-cols-4 gap-2 mb-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
             {images.map((img) => (
               <div key={img.id} className="relative">
                 {img.media_type === "video" ? (
@@ -310,7 +310,7 @@ export function EditListingForm({
           <p className="text-xs text-ink-soft">{newFiles.length} yeni şəkil seçildi.</p>
         )}
         {newFiles.length > 0 && (
-          <div className="grid grid-cols-4 gap-2 mt-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
             {newFiles.map((file, i) => (
               <div key={i} className="relative">
                 {file.type.startsWith("video/") ? (
@@ -345,7 +345,7 @@ export function EditListingForm({
       <button
         type="submit"
         disabled={loading}
-        className="bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-60"
+        className="w-full sm:w-auto bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-60"
       >
         {loading ? "Yenilənir..." : "Dəyişiklikləri yadda saxla"}
       </button>

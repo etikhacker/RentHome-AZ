@@ -68,7 +68,7 @@ export function ProfileForm({
 
   return (
     <div className="bg-paper border border-line rounded-2xl p-4 sm:p-6">
-      <div className="flex items-center gap-4 mb-5 sm:mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-5 sm:mb-6">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] overflow-hidden flex items-center justify-center text-xs text-ink-soft">
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -113,17 +113,17 @@ export function ProfileForm({
 
       {message && <p className="text-sm text-teal-deep mb-3">{message}</p>}
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <button
           onClick={handleSave}
           disabled={saving}
-          className="bg-teal hover:bg-teal-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium disabled:opacity-60"
+          className="w-full sm:w-auto bg-teal hover:bg-teal-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium disabled:opacity-60"
         >
           {saving ? tCommon("saving") : tCommon("save")}
         </button>
         <button
           onClick={handleSignOut}
-          className="text-sm text-brick border-b border-brick"
+          className="w-full sm:w-auto text-sm text-brick border-b border-brick"
         >
           {t("signOut")}
         </button>

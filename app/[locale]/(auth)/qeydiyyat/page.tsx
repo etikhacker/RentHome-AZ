@@ -70,8 +70,8 @@ export default function QeydiyyatPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-bg px-6">
-        <div className="w-full max-w-sm bg-paper border border-line rounded-2xl p-7 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-bg px-4 sm:px-6 py-10">
+        <div className="w-full max-w-sm bg-paper border border-line rounded-2xl p-5 sm:p-7 text-center">
           <h1 className="font-display text-2xl font-medium mb-2">{t("checkEmailTitle")}</h1>
           <p className="text-sm text-ink-soft">
             {t("checkEmailText", { email })}
@@ -82,8 +82,8 @@ export default function QeydiyyatPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg px-6">
-      <div className="w-full max-w-sm bg-paper border border-line rounded-2xl p-7">
+    <div className="min-h-screen flex items-center justify-center bg-bg px-4 sm:px-6 py-10">
+      <div className="w-full max-w-sm bg-paper border border-line rounded-2xl p-5 sm:p-7">
         <h1 className="font-display text-2xl font-medium mb-1">{t("title")}</h1>
         <p className="text-sm text-ink-soft mb-6">{t("subtitle")}</p>
 

@@ -48,7 +48,7 @@ export function MyListingRow({
           </span>
         </div>
       </div>
-      <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0 self-start sm:self-auto w-full sm:w-auto">
         <Link href={`/elan-yerlesdir/${id}`} className="text-xs text-teal-deep border-b border-teal-deep">
           Redaktə et
         </Link>

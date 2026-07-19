@@ -59,20 +59,10 @@ export function MobileMenu({
         <Menu size={22} />
       </button>
 
-      {/* overlay */}
-      <div
-        onClick={() => setOpen(false)}
-        className={`fixed inset-0 bg-ink/40 z-[60] md:hidden transition-opacity duration-200 ${
-          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-        aria-hidden="true"
-      />
-
-      {/* drawer */}
       <aside
-        className={`fixed inset-y-0 right-0 w-[min(86vw,340px)] max-w-[340px] bg-paper border-l border-line shadow-2xl z-[70] md:hidden flex flex-col transition-transform duration-300 ${
+        className={`fixed inset-0 bg-paper z-[70] md:hidden flex flex-col transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
-        } pb-[env(safe-area-inset-bottom)]`}
+        }`}
         aria-hidden={!open}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-line pt-[max(1rem,env(safe-area-inset-top))]">
@@ -138,7 +128,7 @@ export function MobileMenu({
           )}
         </nav>
 
-        <div className="px-5 py-4 border-t border-line space-y-2.5">
+        <div className="px-5 py-4 border-t border-line space-y-2.5 pb-[max(1rem,env(safe-area-inset-bottom))]">
           {isAuthed ? (
             <Link
               href="/profil"

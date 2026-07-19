@@ -146,7 +146,7 @@ export function MessagesClient({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:h-[520px]">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:h-[520px] min-h-[60dvh]">
       {/* Söhbətlər siyahısı — mobil: yalnız söhbət seçilməyibsə görünür */}
       <div
         className={`border border-line rounded-2xl overflow-y-auto bg-paper md:block ${
@@ -209,7 +209,7 @@ export function MessagesClient({
               ))}
             </div>
 
-            <div className="p-2.5 sm:p-3 border-t border-line flex gap-2">
+            <div className="p-2.5 sm:p-3 border-t border-line flex flex-col sm:flex-row gap-2">
               <input
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
@@ -220,7 +220,7 @@ export function MessagesClient({
               <button
                 onClick={handleSend}
                 disabled={sending}
-                className="bg-teal hover:bg-teal-deep text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60 shrink-0"
+                className="w-full sm:w-auto bg-teal hover:bg-teal-deep text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60 shrink-0"
               >
                 {t("send")}
               </button>

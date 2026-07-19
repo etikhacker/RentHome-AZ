@@ -19,12 +19,12 @@ export function LanguageSwitcher({ current }: { current: Locale }) {
   }
 
   return (
-    <div className="flex items-center border border-line rounded overflow-hidden text-[13px]">
+    <div className="grid grid-cols-3 overflow-hidden border border-line rounded text-[13px] sm:flex sm:items-center">
       {(Object.keys(labels) as Locale[]).map((locale) => (
         <button
           key={locale}
           onClick={() => setLocale(locale)}
-          className={`px-2 py-1 ${
+          className={`w-full px-2 py-1 text-center ${
             current === locale ? "bg-teal text-white" : "text-ink-soft hover:bg-white"
           }`}
         >

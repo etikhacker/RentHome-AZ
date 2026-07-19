@@ -82,12 +82,12 @@ export function ListingReviewRow({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 shrink-0 flex-wrap">
+      <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center shrink-0">
         {status !== "tesdiqlendi" && (
           <button
             onClick={() => setStatus("tesdiqlendi")}
             disabled={busy}
-            className="text-xs bg-teal text-white rounded-md px-3 py-1.5 disabled:opacity-50"
+            className="w-full sm:w-auto text-xs bg-teal text-white rounded-md px-3 py-1.5 disabled:opacity-50"
           >
             {t("approve")}
           </button>
@@ -96,7 +96,7 @@ export function ListingReviewRow({
           <button
             onClick={() => setStatus("reddedildi")}
             disabled={busy}
-            className="text-xs border border-brick text-brick rounded-md px-3 py-1.5 disabled:opacity-50"
+            className="w-full sm:w-auto text-xs border border-brick text-brick rounded-md px-3 py-1.5 disabled:opacity-50"
           >
             {t("reject")}
           </button>
@@ -105,7 +105,7 @@ export function ListingReviewRow({
           <button
             onClick={togglePremium}
             disabled={busy}
-            className={`text-xs rounded-md px-3 py-1.5 border disabled:opacity-50 ${
+            className={`w-full sm:w-auto text-xs rounded-md px-3 py-1.5 border disabled:opacity-50 ${
               isPremium ? "border-gold text-gold-deep" : "border-line text-ink-soft"
             }`}
           >
@@ -115,7 +115,7 @@ export function ListingReviewRow({
         <button
           onClick={handleDelete}
           disabled={busy}
-          className="text-xs text-ink-soft hover:text-brick disabled:opacity-50"
+          className="w-full sm:w-auto text-xs text-ink-soft hover:text-brick disabled:opacity-50"
         >
           {tCommon("delete")}
         </button>

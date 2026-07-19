@@ -14,7 +14,7 @@ export function ImageGallery({ images }: { images: Media[] }) {
 
   if (images.length === 0) {
     return (
-      <div className="h-[220px] sm:h-[360px] rounded-xl bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] flex items-center justify-center text-sm text-ink-soft">
+      <div className="aspect-[4/5] sm:aspect-[4/3] rounded-xl bg-gradient-to-br from-[#cfd9c9] to-[#b9c4b3] flex items-center justify-center text-sm text-ink-soft overflow-hidden">
         {tCommon("noImage")}
       </div>
     );
@@ -34,7 +34,7 @@ export function ImageGallery({ images }: { images: Media[] }) {
           <video
             src={images[active].url}
             controls
-            className="w-full h-[220px] sm:h-[360px] object-contain rounded-xl bg-black"
+            className="w-full aspect-[4/5] sm:aspect-[4/3] object-cover sm:object-contain rounded-xl bg-black"
           />
         ) : (
           <button
@@ -47,7 +47,7 @@ export function ImageGallery({ images }: { images: Media[] }) {
             <img
               src={images[active].url}
               alt=""
-              className="w-full h-[220px] sm:h-[360px] object-contain rounded-xl bg-ink/5"
+              className="w-full aspect-[4/5] sm:aspect-[4/3] object-cover sm:object-contain rounded-xl bg-ink/5"
             />
           </button>
         )}

@@ -42,7 +42,7 @@ export function UserRoleRow({
           defaultValue={role}
           disabled={saving}
           onChange={(e) => handleRoleChange(e.target.value)}
-          className="border border-line rounded-md px-2 py-1.5 text-sm bg-white"
+          className="w-full sm:w-auto border border-line rounded-md px-2 py-1.5 text-sm bg-white"
         >
           <option value="icarechi">{tRoles("icarechi")}</option>
           <option value="admin">{tRoles("admin")}</option>
