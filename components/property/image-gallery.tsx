@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react";
 
-export function ImageGallery({
-  images,
-}: {
-  images: { url: string; media_type?: string }[];
-}) {
+type Media = { url: string; media_type?: string };
+
+export function ImageGallery({ images }: { images: Media[] }) {
   const tCommon = useTranslations("common");
   const [active, setActive] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   if (images.length === 0) {
     return (
@@ -37,13 +37,21 @@ export function ImageGallery({
             className="w-full h-[220px] sm:h-[360px] object-contain rounded-xl bg-black"
           />
         ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={images[active].url}
-            alt=""
-            className="w-full h-[220px] sm:h-[360px] object-contain rounded-xl bg-ink/5"
-          />
+          <button
+            type="button"
+            onClick={() => setLightboxOpen(true)}
+            className="block w-full cursor-zoom-in"
+            aria-label="Böyüt"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={images[active].url}
+              alt=""
+              className="w-full h-[220px] sm:h-[360px] object-contain rounded-xl bg-ink/5"
+            />
+          </button>
         )}
+
         {images.length > 1 && (
           <>
             <button
@@ -68,6 +76,7 @@ export function ImageGallery({
           </>
         )}
       </div>
+
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto mt-3 pb-1">
           {images.map((img, i) => (
@@ -102,6 +111,158 @@ export function ImageGallery({
           ))}
         </div>
       )}
+
+      {lightboxOpen && (
+        <Lightbox
+          images={images}
+          active={active}
+          onClose={() => setLightboxOpen(false)}
+          onPrev={prev}
+          onNext={next}
+        />
+      )}
     </div>
+  );
+}
+
+function Lightbox({
+  images,
+  active,
+  onClose,
+  onPrev,
+  onNext,
+}: {
+  images: Media[];
+  active: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  const [zoom, setZoom] = useState(1);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => setZoom(1), [active]);
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onPrev();
+      if (e.key === "ArrowRight") onNext();
+      if (e.key === "+" || e.key === "=") zoomIn();
+      if (e.key === "-") zoomOut();
+    }
+    document.addEventListener("keydown", handleKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  function zoomIn() {
+    setZoom((z) => Math.min(z + 0.5, 4));
+  }
+  function zoomOut() {
+    setZoom((z) => Math.max(z - 0.5, 1));
+  }
+  function handleWheel(e: React.WheelEvent) {
+    e.preventDefault();
+    if (e.deltaY < 0) zoomIn();
+    else zoomOut();
+  }
+  function handleDoubleClick() {
+    setZoom((z) => (z > 1 ? 1 : 2));
+  }
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
+        aria-label="Bağla"
+      >
+        <X size={22} />
+      </button>
+
+      <div className="absolute top-4 left-4 z-10 flex gap-2">
+        <button
+          onClick={zoomOut}
+          disabled={zoom <= 1}
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 text-white flex items-center justify-center"
+          aria-label="Kiçilt"
+        >
+          <ZoomOut size={20} />
+        </button>
+        <button
+          onClick={zoomIn}
+          disabled={zoom >= 4}
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 text-white flex items-center justify-center"
+          aria-label="Böyüt"
+        >
+          <ZoomIn size={20} />
+        </button>
+        <span className="h-10 px-3 rounded-full bg-white/10 text-white text-sm flex items-center">
+          {Math.round(zoom * 100)}%
+        </span>
+      </div>
+
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onPrev();
+            }}
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
+            aria-label="Əvvəlki şəkil"
+          >
+            <ChevronLeft size={22} />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onNext();
+            }}
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
+            aria-label="Növbəti şəkil"
+          >
+            <ChevronRight size={22} />
+          </button>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-white/10 text-white text-xs px-3 py-1 rounded-full">
+            {active + 1} / {images.length}
+          </div>
+        </>
+      )}
+
+      <div
+        className="w-full h-full overflow-auto flex items-center justify-center"
+        onWheel={handleWheel}
+        onDoubleClick={handleDoubleClick}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={images[active].url}
+          alt=""
+          draggable={false}
+          style={{
+            transform: `scale(${zoom})`,
+            transition: "transform 0.15s ease-out",
+            cursor: zoom > 1 ? "grab" : "zoom-in",
+          }}
+          className="max-w-full max-h-full object-contain select-none"
+        />
+      </div>
+    </div>,
+    document.body
   );
 }
