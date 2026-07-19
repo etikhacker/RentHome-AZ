@@ -70,13 +70,13 @@ export function MobileMenu({
 
       {/* drawer */}
       <aside
-        className={`fixed top-0 right-0 bottom-0 w-[82%] max-w-[340px] bg-paper border-l border-line z-[70] md:hidden flex flex-col transition-transform duration-300 ${
+        className={`fixed inset-y-0 right-0 w-[min(86vw,340px)] max-w-[340px] bg-paper border-l border-line shadow-2xl z-[70] md:hidden flex flex-col transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
-        }`}
+        } pb-[env(safe-area-inset-bottom)]`}
         aria-hidden={!open}
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-line">
-          <span className="font-display text-lg font-semibold tracking-tight">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-line pt-[max(1rem,env(safe-area-inset-top))]">
+          <span className="font-display text-lg font-semibold tracking-tight leading-none">
             Rent<span className="text-brick">Home</span> AZ
           </span>
           <button
@@ -93,7 +93,7 @@ export function MobileMenu({
           <LanguageSwitcher current={locale} />
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-5 py-4 space-y-1">
+        <nav className="flex-1 overflow-y-auto overscroll-contain px-5 py-4 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.href}

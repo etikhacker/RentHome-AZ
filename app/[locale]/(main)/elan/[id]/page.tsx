@@ -74,7 +74,7 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
             <ImageGallery images={images} />
 
             <div className="mt-5 sm:mt-6">
-              <h1 className="font-display text-[22px] sm:text-[28px] font-medium mb-1 leading-tight">{property.title}</h1>
+              <h1 className="font-display text-[22px] sm:text-[28px] font-medium mb-1 leading-tight text-balance">{property.title}</h1>
               <p className="text-sm text-ink-soft mb-4">
                 {districtName ? `${districtName}, ` : ""}
                 {cityName} · {property.address}
@@ -98,7 +98,7 @@ export default async function ElanDetayPage({ params }: { params: { id: string }
                 <span className="text-sm text-ink-soft">/ay</span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-6 text-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-6 text-sm">
                 <Stat label="Otaq" value={String(property.rooms)} />
                 <Stat label="Sahə" value={`${property.area_m2} m²`} />
                 <Stat

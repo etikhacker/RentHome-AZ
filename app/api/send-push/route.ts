@@ -2,18 +2,6 @@ import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { createClient } from "@supabase/supabase-js";
 
-webpush.setVapidDetails(
-  "mailto:omrbabayev455@gmail.com",
-  process.env.VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
-// service role client - RLS-i bypass edir, çünki bu, server-to-server çağırışdır
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 const typeLabels: Record<string, string> = {
   yeni_mesaj: "Yeni mesaj",
   elan_tesdiqlendi: "Elan təsdiqləndi",
@@ -22,6 +10,23 @@ const typeLabels: Record<string, string> = {
 };
 
 export async function POST(request: Request) {
+  const vapidPublicKey = process.env.VAPID_PUBLIC_KEY;
+  const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!vapidPublicKey || !vapidPrivateKey || !supabaseUrl || !serviceRoleKey) {
+    return NextResponse.json(
+      { error: "push notifications are not configured" },
+      { status: 503 }
+    );
+  }
+
+  webpush.setVapidDetails("mailto:omrbabayev455@gmail.com", vapidPublicKey, vapidPrivateKey);
+
+  // service role client - RLS-i bypass edir, çünki bu, server-to-server çağırışdır
+  const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+
   const secret = request.headers.get("x-push-secret");
   if (secret !== process.env.PUSH_SECRET) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });

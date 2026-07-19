@@ -4,6 +4,8 @@
 
 body {
   @apply bg-bg text-ink font-sans;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
 .card-pin {

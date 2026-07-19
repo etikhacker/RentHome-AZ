@@ -35,13 +35,13 @@ function buildTags(p: Props["property"]) {
 }
 
 export function PropertyCard({ property, tilt = "left", currentUserId, favorited }: Props) {
-  const rotation = tilt === "left" ? "-rotate-[0.6deg]" : "rotate-[0.5deg]";
+  const rotation = tilt === "left" ? "md:-rotate-[0.6deg]" : "md:rotate-[0.5deg]";
   const tags = buildTags(property);
 
   return (
     <div
       className={`card-pin relative bg-paper border border-line p-3.5 pb-4
-        transition-transform duration-300 hover:-translate-y-1
+        transition-transform duration-300 md:hover:-translate-y-1
         shadow-[0_1px_1px_rgba(22,48,44,0.06),0_8px_16px_-6px_rgba(22,48,44,0.16),0_20px_30px_-18px_rgba(22,48,44,0.18)]
         ${rotation}`}
     >
@@ -65,7 +65,7 @@ export function PropertyCard({ property, tilt = "left", currentUserId, favorited
           )}
         </div>
 
-        <h3 className="text-[15.5px] font-semibold mb-1">{property.title}</h3>
+        <h3 className="text-[15.5px] font-semibold mb-1 text-balance">{property.title}</h3>
         <p className="text-[12.5px] text-ink-soft mb-2.5">
           {property.districtName ?? ""} {property.cityName ? `, ${property.cityName}` : ""}
           {property.floor && property.total_floors

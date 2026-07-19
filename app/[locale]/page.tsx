@@ -72,7 +72,7 @@ export default async function HomePage() {
 
       <section className="pt-10 sm:pt-16 pb-8 sm:pb-10">
         <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
-          <h1 className="font-display font-medium text-[32px] sm:text-[40px] md:text-[46px] leading-[1.1] sm:leading-[1.12] tracking-tight max-w-xl">
+          <h1 className="font-display font-medium text-[32px] sm:text-[40px] md:text-[46px] leading-[1.1] sm:leading-[1.12] tracking-tight max-w-xl text-balance">
             {t.heroTitle1}
             <br />
             {t.heroTitle2} <em className="italic text-brick not-italic font-medium">{t.heroTitle3}</em>
@@ -135,7 +135,7 @@ export default async function HomePage() {
 
       <section className="pt-10 sm:pt-12">
         <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
-          <div className="flex items-baseline justify-between mb-5 gap-3">
+          <div className="flex flex-col items-start gap-2 mb-5 sm:flex-row sm:items-baseline sm:justify-between">
             <h2 className="font-display text-xl sm:text-2xl font-medium">{t.newest}</h2>
             <a href="/elanlar" className="text-[13.5px] text-teal-deep border-b border-teal-deep whitespace-nowrap">
               {t.seeAll}
@@ -163,7 +163,7 @@ export default async function HomePage() {
       {premium && premium.length > 0 && (
         <section className="pt-12 sm:pt-14 pb-14 sm:pb-16">
           <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
-            <div className="flex items-baseline justify-between mb-5 gap-3">
+            <div className="flex flex-col items-start gap-2 mb-5 sm:flex-row sm:items-baseline sm:justify-between">
               <h2 className="font-display text-xl sm:text-2xl font-medium">{t.premium}</h2>
               <a href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep whitespace-nowrap">
                 {t.seeAll}

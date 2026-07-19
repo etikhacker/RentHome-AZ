@@ -254,7 +254,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
         </h2>
 
         {images.length > 0 && (
-          <div className="grid grid-cols-4 gap-2 mb-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
             {images.map((file, i) => (
               <div key={i} className="relative">
                 {file.type.startsWith("video/") ? (
@@ -294,7 +294,7 @@ export function ListingForm({ cities, ownerId }: { cities: City[]; ownerId: stri
       <button
         type="submit"
         disabled={loading}
-        className="bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-60"
+        className="w-full sm:w-auto bg-teal hover:bg-teal-deep text-white rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-60"
       >
         {loading ? t("submitting") : t("submit")}
       </button>

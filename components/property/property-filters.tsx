@@ -108,16 +108,16 @@ export function PropertyFilters({
           Lift
         </label>
 
-        <div className="ml-auto flex items-center gap-3.5 w-full sm:w-auto">
+        <div className="ml-auto flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3.5">
           <button
             type="submit"
-            className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium flex-1 sm:flex-none"
+            className="w-full bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium sm:w-auto"
           >
             Axtar
           </button>
           <a
             href="/elanlar"
-            className="text-sm text-ink-soft border-b border-line"
+            className="text-sm text-ink-soft border-b border-line self-center sm:self-auto"
           >
             Sıfırla
           </a>

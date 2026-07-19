@@ -39,9 +39,12 @@ export async function SiteHeader() {
   ];
 
   return (
-    <header className="border-b border-line py-4 sm:py-5 sticky top-0 bg-bg/95 backdrop-blur z-50">
-      <div className="max-w-[1120px] mx-auto px-4 sm:px-7 flex items-center justify-between gap-3">
-        <Link href="/" className="font-display text-[20px] sm:text-[22px] font-semibold tracking-tight shrink-0">
+    <header className="sticky top-0 z-50 border-b border-line bg-bg/95 py-4 sm:py-5 backdrop-blur">
+      <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-2 px-4 sm:px-7">
+        <Link
+          href="/"
+          className="min-w-0 shrink font-display text-[18px] sm:text-[22px] font-semibold tracking-tight leading-none"
+        >
           Rent<span className="text-brick">Home</span> AZ
         </Link>
 

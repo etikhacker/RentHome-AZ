@@ -55,7 +55,7 @@ export function ContactOwnerBox({
     <div className="bg-paper border border-line rounded-2xl p-5">
       <h3 className="font-display text-lg font-medium mb-3">{t("contactTitle")}</h3>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-col gap-2 mb-4 sm:flex-row">
         <a
           href={`tel:${ownerPhone}`}
           className="flex-1 text-center border border-line rounded-lg py-2.5 text-sm font-medium"
@@ -66,6 +66,7 @@ export function ContactOwnerBox({
           <a
             href={`https://wa.me/${ownerWhatsapp.replace(/\D/g, "")}`}
             target="_blank"
+            rel="noopener noreferrer"
             className="flex-1 text-center bg-teal text-white rounded-lg py-2.5 text-sm font-medium"
           >
             {t("whatsapp")}
