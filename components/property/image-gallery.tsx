@@ -34,14 +34,14 @@ export function ImageGallery({
           <video
             src={images[active].url}
             controls
-            className="w-full h-[220px] sm:h-[360px] object-cover rounded-xl bg-black"
+            className="w-full h-[220px] sm:h-[360px] object-contain rounded-xl bg-black"
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={images[active].url}
             alt=""
-            className="w-full h-[220px] sm:h-[360px] object-cover rounded-xl"
+            className="w-full h-[220px] sm:h-[360px] object-contain rounded-xl bg-ink/5"
           />
         )}
         {images.length > 1 && (
