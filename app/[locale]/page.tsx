@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { ShieldCheck, Zap, Home as HomeIcon, Headset } from "lucide-react";
+import { HouseIllustration } from "@/components/illustrations/house-illustration";
 
 const cardFields =
   `id, title, price, floor, total_floors, is_premium, is_renovated,
@@ -81,7 +82,8 @@ export default async function HomePage() {
       <SiteHeader />
 
       <section className="pt-10 sm:pt-16 pb-8 sm:pb-10">
-        <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
+        <div className="max-w-[1120px] mx-auto px-4 sm:px-7 grid md:grid-cols-[1.15fr_0.85fr] gap-8 md:gap-10 items-center">
+          <div>
           <h1 className="font-display font-medium text-[32px] sm:text-[40px] md:text-[46px] leading-[1.1] sm:leading-[1.12] tracking-tight max-w-xl">
             {t.heroTitle1}
             <br />
@@ -89,7 +91,7 @@ export default async function HomePage() {
           </h1>
           <p className="mt-3.5 text-[15px] sm:text-[16.5px] text-ink-soft max-w-md">{t.heroSubtitle}</p>
 
-          <form action="/elanlar" className="mt-7 sm:mt-8 bg-paper border border-line rounded-2xl p-3.5 sm:p-4.5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 sm:gap-3.5 items-end">
+          <form action="/elanlar" className="mt-7 sm:mt-8 bg-paper border border-line rounded-2xl p-3.5 sm:p-4.5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-3.5 items-end">
             <div>
               <label className="block text-xs text-ink-soft mb-1.5 font-medium">{t.city}</label>
               <select name="city" className="w-full border border-line bg-white rounded-lg px-3 py-2.5 text-sm">
@@ -136,12 +138,12 @@ export default async function HomePage() {
                 <option value="ofis">Ofis</option>
               </select>
             </div>
-            <button className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium sm:col-span-2 md:col-span-1">
+            <button className="bg-brick hover:bg-brick-deep text-white rounded-lg px-5 py-2.5 text-sm font-medium">
               {t.search_btn}
             </button>
           </form>
 
-          <div className="mt-6 sm:mt-7 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div className="mt-6 sm:mt-7 grid grid-cols-2 gap-3 sm:gap-4">
             {[
               { Icon: ShieldCheck, title: "Etibarlı və yoxlanılmış", text: "Hər elan admin tərəfindən yoxlanılır" },
               { Icon: Zap, title: "Sürətli axtarış", text: "Filtrlə saniyələr içində tap" },
@@ -158,6 +160,11 @@ export default async function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+          </div>
+
+          <div className="hidden md:block">
+            <HouseIllustration />
           </div>
         </div>
       </section>
