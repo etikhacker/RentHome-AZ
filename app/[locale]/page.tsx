@@ -3,6 +3,7 @@ import { PropertyCard } from "@/components/property/property-card";
 import { createClient } from "@/lib/supabase/server";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionary";
+import { ShieldCheck, Zap, Home as HomeIcon, Headset } from "lucide-react";
 
 const cardFields =
   `id, title, price, floor, total_floors, is_premium, is_renovated,
@@ -37,7 +38,14 @@ export default async function HomePage() {
   const t = getDictionary(locale).home;
   const supabase = createClient();
 
-  const [{ data: newest }, { data: premium }, { data: cities }, { data: { user } }] = await Promise.all([
+  const [
+    { data: newest },
+    { data: premium },
+    { data: cities },
+    { data: { user } },
+    { count: activeListingsCount },
+    { count: usersCount },
+  ] = await Promise.all([
     supabase
       .from("properties")
       .select(cardFields)
@@ -53,6 +61,8 @@ export default async function HomePage() {
       .limit(3),
     supabase.from("cities").select("id, name").order("name"),
     supabase.auth.getUser(),
+    supabase.from("properties").select("id", { count: "exact", head: true }).eq("status", "tesdiqlendi"),
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
   ]);
 
   const allIds = [...(newest ?? []), ...(premium ?? [])].map((p: any) => p.id);
@@ -72,7 +82,7 @@ export default async function HomePage() {
 
       <section className="pt-10 sm:pt-16 pb-8 sm:pb-10">
         <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
-          <h1 className="font-display font-medium text-[32px] sm:text-[40px] md:text-[46px] leading-[1.1] sm:leading-[1.12] tracking-tight max-w-xl text-balance">
+          <h1 className="font-display font-medium text-[32px] sm:text-[40px] md:text-[46px] leading-[1.1] sm:leading-[1.12] tracking-tight max-w-xl">
             {t.heroTitle1}
             <br />
             {t.heroTitle2} <em className="italic text-brick not-italic font-medium">{t.heroTitle3}</em>
@@ -130,12 +140,31 @@ export default async function HomePage() {
               {t.search_btn}
             </button>
           </form>
+
+          <div className="mt-6 sm:mt-7 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {[
+              { Icon: ShieldCheck, title: "Etibarlı və yoxlanılmış", text: "Hər elan admin tərəfindən yoxlanılır" },
+              { Icon: Zap, title: "Sürətli axtarış", text: "Filtrlə saniyələr içində tap" },
+              { Icon: HomeIcon, title: "Geniş seçim", text: "Bir çox şəhərdə minlərlə ev" },
+              { Icon: Headset, title: "Dəstək xidməti", text: "Sualların olsa bizimlə əlaqə saxla" },
+            ].map(({ Icon, title, text }) => (
+              <div key={title} className="bg-paper border border-line rounded-xl p-3.5 sm:p-4 flex items-start gap-3">
+                <span className="shrink-0 w-9 h-9 rounded-lg bg-teal/10 text-teal-deep flex items-center justify-center">
+                  <Icon size={18} />
+                </span>
+                <div>
+                  <div className="text-[13px] sm:text-sm font-semibold leading-tight">{title}</div>
+                  <div className="text-[11.5px] sm:text-xs text-ink-soft mt-0.5 leading-snug">{text}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="pt-10 sm:pt-12">
         <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
-          <div className="flex flex-col items-start gap-2 mb-5 sm:flex-row sm:items-baseline sm:justify-between">
+          <div className="flex items-baseline justify-between mb-5 gap-3">
             <h2 className="font-display text-xl sm:text-2xl font-medium">{t.newest}</h2>
             <a href="/elanlar" className="text-[13.5px] text-teal-deep border-b border-teal-deep whitespace-nowrap">
               {t.seeAll}
@@ -163,7 +192,7 @@ export default async function HomePage() {
       {premium && premium.length > 0 && (
         <section className="pt-12 sm:pt-14 pb-14 sm:pb-16">
           <div className="max-w-[1120px] mx-auto px-4 sm:px-7">
-            <div className="flex flex-col items-start gap-2 mb-5 sm:flex-row sm:items-baseline sm:justify-between">
+            <div className="flex items-baseline justify-between mb-5 gap-3">
               <h2 className="font-display text-xl sm:text-2xl font-medium">{t.premium}</h2>
               <a href="/elanlar?premium=1" className="text-[13.5px] text-teal-deep border-b border-teal-deep whitespace-nowrap">
                 {t.seeAll}
@@ -200,6 +229,25 @@ export default async function HomePage() {
           >
             Bizimlə əlaqə
           </a>
+        </div>
+      </section>
+
+      <section className="py-8 sm:py-10 border-t border-line">
+        <div className="max-w-[1120px] mx-auto px-4 sm:px-7 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
+          {[
+            { Icon: HomeIcon, value: `${activeListingsCount ?? 0}+`, label: "Aktiv elan" },
+            { Icon: ShieldCheck, value: "100%", label: "Yoxlanılmış elanlar" },
+            { Icon: Headset, value: "7/24", label: "Dəstək xidməti" },
+            { Icon: Zap, value: `${usersCount ?? 0}+`, label: "Qeydiyyatlı istifadəçi" },
+          ].map(({ Icon, value, label }) => (
+            <div key={label} className="flex flex-col items-center gap-1.5">
+              <span className="w-10 h-10 rounded-full bg-teal/10 text-teal-deep flex items-center justify-center">
+                <Icon size={19} />
+              </span>
+              <span className="font-mono text-xl sm:text-2xl font-medium text-ink">{value}</span>
+              <span className="text-[11.5px] sm:text-xs text-ink-soft">{label}</span>
+            </div>
+          ))}
         </div>
       </section>
 
