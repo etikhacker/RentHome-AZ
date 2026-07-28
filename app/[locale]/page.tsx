@@ -164,8 +164,15 @@ export default async function HomePage() {
           </div>
 
           <div className="hidden md:block">
-            <HouseIllustration />
-          </div>
+  <div className="rounded-2xl overflow-hidden shadow-[0_20px_50px_-15px_rgba(22,48,44,0.35)]">
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img
+      src="https://images.pexels.com/photos/7851906/pexels-photo-7851906.jpeg?auto=compress&cs=tinysrgb&w=1000"
+      alt="İstirahət otağı"
+      className="w-full h-[420px] object-cover"
+    />
+  </div>
+</div>
         </div>
       </section>
 
