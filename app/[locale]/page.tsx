@@ -5,6 +5,8 @@ import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { ShieldCheck, Zap, Home as HomeIcon, Headset } from "lucide-react";
 import { HouseIllustration } from "@/components/illustrations/house-illustration";
+import { Reveal } from "@/components/anim/reveal";
+import { AnimatedCounter } from "@/components/anim/animated-counter";
 
 const cardFields =
   `id, title, price, floor, total_floors, is_premium, is_renovated,
@@ -83,7 +85,7 @@ export default async function HomePage() {
 
       <section className="pt-10 sm:pt-16 pb-8 sm:pb-10">
         <div className="max-w-[1120px] mx-auto px-4 sm:px-7 grid md:grid-cols-[1.15fr_0.85fr] gap-8 md:gap-10 items-center">
-          <div>
+          <Reveal>
           <h1 className="font-display font-medium text-[32px] sm:text-[40px] md:text-[46px] leading-[1.1] sm:leading-[1.12] tracking-tight max-w-xl">
             {t.heroTitle1}
             <br />
@@ -161,11 +163,11 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-          </div>
+          </Reveal>
 
-          <div className="hidden md:block">
+          <Reveal delay={200} className="hidden md:block">
             <HouseIllustration />
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -181,7 +183,7 @@ export default async function HomePage() {
           {!newest || newest.length === 0 ? (
             <p className="text-sm text-ink-soft">Hələ təsdiqlənmiş elan yoxdur.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Reveal staggerChildren className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {newest.map((p: any, i: number) => (
                 <PropertyCard
                   key={p.id}
@@ -191,7 +193,7 @@ export default async function HomePage() {
                   favorited={favoritedIds.has(p.id)}
                 />
               ))}
-            </div>
+            </Reveal>
           )}
         </div>
       </section>
@@ -205,7 +207,7 @@ export default async function HomePage() {
                 {t.seeAll}
               </a>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Reveal staggerChildren className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {premium.map((p: any, i: number) => (
                 <PropertyCard
                   key={p.id}
@@ -215,7 +217,7 @@ export default async function HomePage() {
                   favorited={favoritedIds.has(p.id)}
                 />
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
       )}
@@ -240,7 +242,7 @@ export default async function HomePage() {
       </section>
 
       <section className="py-8 sm:py-10 border-t border-line">
-        <div className="max-w-[1120px] mx-auto px-4 sm:px-7 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
+        <Reveal staggerChildren className="max-w-[1120px] mx-auto px-4 sm:px-7 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
           {[
             { Icon: HomeIcon, value: `${activeListingsCount ?? 0}+`, label: "Aktiv elan" },
             { Icon: ShieldCheck, value: "100%", label: "Yoxlanılmış elanlar" },
@@ -251,11 +253,11 @@ export default async function HomePage() {
               <span className="w-10 h-10 rounded-full bg-teal/10 text-teal-deep flex items-center justify-center">
                 <Icon size={19} />
               </span>
-              <span className="font-mono text-xl sm:text-2xl font-medium text-ink">{value}</span>
+              <AnimatedCounter value={value} className="font-mono text-xl sm:text-2xl font-medium text-ink" />
               <span className="text-[11.5px] sm:text-xs text-ink-soft">{label}</span>
             </div>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       <footer className="border-t border-line py-6 sm:py-7 text-[13px] text-ink-soft">
