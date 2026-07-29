@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { ShieldCheck, Zap, Home as HomeIcon, Headset } from "lucide-react";
-import { HouseIllustration } from "@/components/illustrations/house-illustration";
 import { Reveal } from "@/components/anim/reveal";
 import { AnimatedCounter } from "@/components/anim/animated-counter";
 
@@ -166,7 +165,14 @@ export default async function HomePage() {
           </Reveal>
 
           <div className="hidden md:block">
-            <HouseIllustration />
+            <div className="rounded-2xl overflow-hidden shadow-[0_20px_50px_-15px_rgba(22,48,44,0.35)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.pexels.com/photos/7851906/pexels-photo-7851906.jpeg?auto=compress&cs=tinysrgb&w=1000"
+                alt="İstirahət otağı"
+                className="w-full h-[420px] object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
