@@ -165,9 +165,9 @@ export default async function HomePage() {
           </div>
           </Reveal>
 
-          <Reveal delay={200} className="hidden md:block">
+          <div className="hidden md:block">
             <HouseIllustration />
-          </Reveal>
+          </div>
         </div>
       </section>
 
